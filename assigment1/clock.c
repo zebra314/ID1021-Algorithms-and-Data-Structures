@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
   // simple_bench();
   diff_sizes_bench();
 }
-
+    
 void test_clock_accuracy() {
   for(int i = 0; i < 10; i++) {
     clock_gettime(CLOCK_MONOTONIC, &t_start);

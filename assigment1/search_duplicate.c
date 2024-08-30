@@ -10,7 +10,18 @@
 long duplicates(int n, int loop);
 
 int main(int argc, char *argv[]) {
-
+  // int sizes[] = {1000,2000,4000,8000,16000,32000};
+  int k = 10;
+  int loop = 1000;
+  for (int n = 1000; n <= 32000; n *= 2) {
+    long min = LONG_MAX;
+    for (int i = 0; i < k; i++) {
+      long wall = duplicates(n, loop);
+      if (wall < min)
+        min = wall;
+    }
+    printf("%d %0.2f ns\n", n, (double)min/loop);
+  }
 }
 
 long duplicates(int n, int loop) {
