@@ -23,6 +23,88 @@
 
 \section*{Random access}
 
+Before measuring the time required to access random elements in an array, we need determine the 
+accuracy of the clock. This can be completed by calling the {\tt clock\_gettime()} function two times and 
+calculate the time difference between the two calls. The following code snippet is used to test the accuracy 
+of the clock and the result is shown in Figure \ref{fig:clock_accuracy}. 
+
+\begin{minted}{c}
+    void test_clock_accuracy() {
+        for(int i = 0; i < 1000; i++) {
+            clock_gettime(CLOCK_MONOTONIC, &t_start);
+            clock_gettime(CLOCK_MONOTONIC, &t_stop);
+            long wall = nano_seconds(&t_start, &t_stop);
+            printf("%ld ns\n", wall); 
+        }
+    }
+\end{minted}
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[
+        xlabel={Iteration},
+        ylabel={Time (ns)},
+        xmode=log,
+        log basis x=10,
+        xmin=1, xmax=1000,
+        ymin=0, ymax=40,
+        xtick={1,10,100,1000},
+        ytick={0,5,10,15,20,25,30,35,40},
+        ymajorgrids=true,
+        grid style=dashed,
+        width=12cm, height=6cm,
+        ]
+        \addplot[color=blue,] table {data/test_clock_accuracy.dat};
+    \end{axis}
+
+    \end{tikzpicture}
+    \caption{Time difference between two calls of clock\_gettime()}
+    \label{fig:clock_accuracy}
+\end{figure}
+
+The time difference between two calls of {\tt clock\_gettime()} is about 14 ns. The difference 
+includes the time required to execute the system call, read the hardware clock and return the result. 
+Additionally, the CPU will need to load the function into memory. If the function 
+is not inside the cache (cache miss), the CPU will need to fetch the function from the main memory, 
+which is slower, and this is why the first few iterations are slower than the rest.
+
+Besides, when the CPU is executing multiple threads, it has to manage context switching between processes, 
+distribute its computational resources across all active tasks, and handle other system overheads, which can cause delay.
+It will take longer to execute the function. Therefore, the workload of the CPU can also affect the time it takes to 
+execute the function.
+
+The following plot is the comparison between using only the terminal to run the program and running the program while 
+web browsing and IDE is open. To avoid the influence from the CPU workload and ensure the accuracy of the 
+time measurement, we should run the program in a quiet enviroment with minimal background processes.
+
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[
+        xlabel={Iteration},
+        ylabel={Time (ns)},
+        xmode=log,
+        log basis x=10,
+        xmin=1, xmax=1000,
+        ymin=0, ymax=160,
+        xtick={1,10,100,1000},
+        ytick={0,20,40,60,80,100,120,140,160},
+        ymajorgrids=true,
+        grid style=dashed,
+        width=12cm, height=7cm,
+        ]
+        \legend{Normal Condition, Busy Condition}
+        \addplot[color=blue,] table {data/test_clock_accuracy.dat};
+        \addplot[color=red,] table {data/test_clock_accuracy_busy.dat};
+    \end{axis}
+
+    \end{tikzpicture}
+    \caption{Comparison between running the program with and without CPU workload}
+    \label{fig:clock_accuracy_busy}
+\end{figure}
+
 \section*{Search}
 
 \section*{Duplicates}
