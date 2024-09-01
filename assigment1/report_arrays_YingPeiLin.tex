@@ -6,6 +6,7 @@
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{float}
+\usepackage{amsmath}
 
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18} 
@@ -67,7 +68,7 @@ int main(int argc, char *argv[]) {
 
 The time difference between two calls of {\tt clock\_gettime()} is about 15 ns. The difference
 includes the time needed to execute the system call, read the hardware clock and return the result. 
-At the begining, The CPU will load the function into memory, if the function 
+At the beginning, The CPU will load the function into memory, if the function 
 is not inside the cache (cache miss), then the CPU needs to get the function from the main memory, 
 which takes more time. This could be why the first few iterations are slower than the rest.
 
@@ -190,10 +191,10 @@ than 16k elements. The time increases as the array size grows, when the size rea
 64k and 256k elements, the times ranged from 6 ns to 12 ns per operation, with some
 significant fluctuations at certain points. 
 
-As we increase the array size to more than 512k elements,
+As the array increases to more than 512k elements,
 the time becomes more stable around 10 ns for each operation and when the size doubles, the time
 increase a little bit. If the time increases linearly while the array size doubles, the pattern is likely
-to be $O(log(n))$ and the time can be approximated by $T(n) = a + b \cdot log(n)$. 
+to be $O(log(n))$ and the time can be approximated by $T(n) = a + b \cdot log(n * loop)$. 
 
 We can do another experiment foucsing on the bigger array size to verify the pattern. 
 The result is shown in Figure \ref{fig:random_access_big}.
@@ -233,10 +234,10 @@ can be very large.
   \label{fig:random_access_big}
 \end{figure}
 
-\section*{Search}
+\section*{Search for an item}
 
-The following code snippet is used to measure the time required to search for random elements in
-an array and the result is shown in Figure \ref{fig:search}.
+The following code snippet is used to measure the time required to search for an item in an array,
+and the result is shown in Figure \ref{fig:search_v1}.
 
 \begin{minted}{c}
 long search(int n, int loop) {
@@ -258,7 +259,7 @@ long search(int n, int loop) {
     }
   }
   clock_gettime(CLOCK_MONOTONIC, &t_stop);
-
+  if(sum == 0) return 0;
   long wall = nano_seconds(&t_start, &t_stop);
   return wall;
 }
@@ -274,12 +275,12 @@ long search(int n, int loop) {
     xmode=log,
     log ticks with fixed point,
     xtick={1000,2000,4000,8000,16000,32000,64000,128000,256000,512000,1024000,2048000,4096000},
-    ytick={0,200000,400000,600000,800000,1000000},
+    ytick={0,200000,400000,600000,800000,1000000,1200000},
     ymajorgrids=true,     
     grid style=dashed,
     width=14cm, height=6cm,
     xticklabels={1,2,4,8,16,32,64,128,256,512,1024,2048,4096},
-    yticklabels={0,0.25,0.5,0.75,1,1.25},
+    yticklabels={0,0.2,0.4,0.6,0.8,1.0,1.2},
     legend pos=outer north east,
     scaled y ticks=false,
     ]
@@ -294,22 +295,29 @@ long search(int n, int loop) {
   \label{fig:search_v1}
 \end{figure}
 
+The result is quite different from the random access time. When the size of the array doubles,
+the time required also doubles, which indicates that the time might be linearly related to the
+size of the array. To verify this, I change the size of array in each iteration 
+(from double in each iteration to increase by a constant value) and the new result is shown in 
+Figure \ref{fig:search_v2}. 
 
 \begin{figure}[H]
   \centering
   \begin{tikzpicture}
   \begin{axis}[
-    xlabel={Array Size(per k elements)},
-    ylabel={Time (ns)},
-    % xmode=log,
-    % log ticks with fixed point,
+    xlabel={Array Size(per M elements)},
+    ylabel={Time (ms)},
     ymin=0, ymax=1100000,
-    % xtick={1000,2000,4000,8000,16000,32000,64000,128000,256000,512000,1024000,2048000,4096000},
-    ymajorgrids=true,     
+    ymajorgrids=true,
+    xtick={1000,274000,547000,820000,1093000,1366000,1639000,1912000,2185000,2458000,2731000,3004000,3277000,3550000,3823000,4096000},
+    ytick={0,200000,400000,600000,800000,1000000,1200000},
     grid style=dashed,
     width=14cm, height=6cm,
-    % xticklabels={1,2,4,8,16,32,64,128,256,512,1024,2048,4096},
+    xticklabels={0,0.2,0.5,0.8,1.0,1.4,1.6,1.9,2.2,2.5,2.7,3.0,3.3,3.6,3.8,4.1},
+    yticklabels={0,0.2,0.4,0.6,0.8,1.0,1.2},
     legend pos=outer north east,
+    scaled y ticks=false,
+    scaled x ticks=false,
     ]
     \legend{Min, Max, Avg}
     \addplot table[x index=0, y index=1] {data/search_item_v2.dat};
@@ -318,11 +326,56 @@ long search(int n, int loop) {
   \end{axis}
 
   \end{tikzpicture}
-  \caption{Search time in an array}
+  \caption{Search time in an array increasing by a constant value}
   \label{fig:search_v2}
 \end{figure}
 
+The time required to search for an item in an array is linearly related to the size of the array when
+the size of the array is less than 4.1M elements according to the result. Therefore, the pattern is likely to be $O(n)$ and
+the time can be approximated by $T(n) = a + b \cdot n$.
+
+As we searching from the start of the array to the end, the time required will be linearly related to
+where the target is located in the array.
+Assume there are $n$ positions in the array and the probility of finding the target at each position
+is $1/n$, which is the same for all positions. Then, the expected position to find the target is
+
+\begin{equation}		
+  E[X] = \sum_{i=1}^{n} i \cdot \frac{1}{n} = \frac{1}{n} \sum_{i=1}^{n} i = \frac{n+1}{2}
+\end{equation}
+
+Thus, the expected time to find the target $T(n)$ will be proportional to $\frac{n+1}{2}$, 
+which is $O(n)$.
 
 \section*{Duplicates}
+
+
+\begin{minted}{c}
+long duplicates(int n, int loop) {
+  int *array_a = (int*)malloc(n*sizeof(int));
+  for (int i = 0; i < n; i++) array_a[i] = rand()%(n*2);
+
+  int *array_b = (int*)malloc(n*sizeof(int));
+  for (int i = 0; i < loop; i++) array_b[i] = rand()%(n*2);
+
+  int sum = 0;
+  clock_gettime(CLOCK_MONOTONIC, &t_start);
+  for (int k = 0; k < loop; k++) {
+    int sum = 0;
+    for (int i = 0; i < n; i++) {
+      int key = array_a[i];
+      for (int j = 0; j < n; j++) {
+        if (key == array_b[j]) {
+          sum++;
+          break;
+        }
+      }
+    }
+  }
+  clock_gettime(CLOCK_MONOTONIC, &t_stop);
+  if(sum == 0) return 0;
+  long wall = nano_seconds(&t_start, &t_stop);
+  return wall;
+}
+\end{minted}
 
 \end{document}
