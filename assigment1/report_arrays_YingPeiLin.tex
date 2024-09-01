@@ -21,7 +21,7 @@
 
 \maketitle
 
-\section*{Random access}
+\section*{Clock Accuracy}
 
 Before measuring the time required to access random elements in an array, we need determine the 
 accuracy of the clock. This can be completed by calling the {\tt clock\_gettime()} function two times and 
@@ -29,80 +29,193 @@ calculate the time difference between the two calls. The following code snippet 
 of the clock and the result is shown in Figure \ref{fig:clock_accuracy}. 
 
 \begin{minted}{c}
-    void test_clock_accuracy() {
-        for(int i = 0; i < 1000; i++) {
-            clock_gettime(CLOCK_MONOTONIC, &t_start);
-            clock_gettime(CLOCK_MONOTONIC, &t_stop);
-            long wall = nano_seconds(&t_start, &t_stop);
-            printf("%ld ns\n", wall); 
-        }
-    }
+int main(int argc, char *argv[]) {
+  for(int i = 0; i < 1000; i++) {
+    clock_gettime(CLOCK_MONOTONIC, &t_start);
+    clock_gettime(CLOCK_MONOTONIC, &t_stop);
+    long wall = nano_seconds(&t_start, &t_stop);
+    printf("%ld ns\n", wall); 
+  }
+}
 \end{minted}
 
 \begin{figure}[h]
-    \centering
-    \begin{tikzpicture}
-    \begin{axis}[
-        xlabel={Iteration},
-        ylabel={Time (ns)},
-        xmode=log,
-        log basis x=10,
-        xmin=1, xmax=1000,
-        ymin=0, ymax=40,
-        xtick={1,10,100,1000},
-        ytick={0,5,10,15,20,25,30,35,40},
-        ymajorgrids=true,
-        grid style=dashed,
-        width=12cm, height=6cm,
-        ]
-        \addplot[color=blue,] table {data/test_clock_accuracy.dat};
-    \end{axis}
+  \centering
+  \begin{tikzpicture}
+  \begin{axis}[
+    xlabel={Iteration},
+    ylabel={Time (ns)},
+    xmode=log,
+    log basis x=10,
+    xmin=1, xmax=1000,
+    ymin=0, ymax=40,
+    xtick={1,10,100,1000},
+    ytick={0,5,10,15,20,25,30,35,40},
+    ymajorgrids=true,
+    grid style=dashed,
+    width=12cm, height=6cm,
+    ]
+  \addplot[color=blue,] table {data/test_clock_accuracy.dat};
+  \end{axis}
 
-    \end{tikzpicture}
-    \caption{Time difference between two calls of clock\_gettime()}
-    \label{fig:clock_accuracy}
+  \end{tikzpicture}
+  \caption{Time difference between two calls of clock\_gettime()}
+  \label{fig:clock_accuracy}
 \end{figure}
 
-The time difference between two calls of {\tt clock\_gettime()} is about 14 ns. The difference 
-includes the time required to execute the system call, read the hardware clock and return the result. 
-Additionally, the CPU will need to load the function into memory. If the function 
-is not inside the cache (cache miss), the CPU will need to fetch the function from the main memory, 
-which is slower, and this is why the first few iterations are slower than the rest.
+The time difference between two calls of {\tt clock\_gettime()} is about 15 ns. The difference
+includes the time needed to execute the system call, read the hardware clock and return the result. 
+At the begining, The CPU will load the function into memory, if the function 
+is not inside the cache (cache miss), then the CPU needs to get the function from the main memory, 
+which takes more time. This could be why the first few iterations are slower than the rest.
 
 Besides, when the CPU is executing multiple threads, it has to manage context switching between processes, 
 distribute its computational resources across all active tasks, and handle other system overheads, which can cause delay.
 It will take longer to execute the function. Therefore, the workload of the CPU can also affect the time it takes to 
 execute the function.
 
-The following plot is the comparison between using only the terminal to run the program and running the program while 
+Figure \ref{fig:clock_accuracy_busy} is the comparison between using only the terminal to run the program and running the program while 
 web browsing and IDE is open. To avoid the influence from the CPU workload and ensure the accuracy of the 
 time measurement, we should run the program in a quiet enviroment with minimal background processes.
 
+\begin{figure}[h]
+  \centering
+  \begin{tikzpicture}
+  \begin{axis}[
+    xlabel={Iteration},
+    ylabel={Time (ns)},
+    xmode=log,
+    log basis x=10,
+    xmin=1, xmax=1000,
+    ymin=0, ymax=160,
+    xtick={1,10,100,1000},
+    ytick={0,20,40,60,80,100,120,140,160},
+    ymajorgrids=true,
+    grid style=dashed,
+    width=12cm, height=7cm,
+    ]
+    \legend{Normal Condition, Busy Condition}
+    \addplot[color=blue,] table {data/test_clock_accuracy.dat};
+    \addplot[color=red,] table {data/test_clock_accuracy_busy.dat};
+  \end{axis}
+
+  \end{tikzpicture}
+  \caption{Comparison between running the program with and without CPU workload}
+  \label{fig:clock_accuracy_busy}
+\end{figure}
+
+\section*{Random Access}
+
+The following code snippet is used to measure the time required to access random
+elements in an array and the result is shown in Figure \ref{fig:random_access}.
+To measure the time, we first create an array of size $n$ with the value $i$ at index $i$ as the 
+target we want to access. Then, we create another array of size $loop$ with random values between 
+0 and $n-1$ as the index array we use to access the target array. After that, we record the time 
+before and after the loop that accesses the target array using the index array. 
+
+\begin{minted}{c}
+  long bench(int n, int loop) {
+    int *array = (int*)malloc(n*sizeof(int));
+    for (int i = 0; i < n; i++) array[i] = i;
+    
+    int *indx = (int*)malloc(loop*sizeof(int));
+    for (int i = 0; i < loop; i++) indx[i] = rand()%n;
+
+    int sum = 0;
+    clock_gettime(CLOCK_MONOTONIC, &t_start);
+    for (int i = 0; i < loop; i++) sum += array[indx[i]];
+    clock_gettime(CLOCK_MONOTONIC, &t_stop);
+
+    if (sum == 0)
+      return 0;
+
+    long wall = nano_seconds(&t_start, &t_stop);
+    return wall;
+  }
+
+  int main(int argc, char *argv[]) {
+    int k = 10;
+    int loop = 1000;
+    for (int n = 1000; n <= 16384000; n *= 2) {
+      long min_time = LONG_MAX;
+      long max_time = 0;
+      long total_time = 0;
+      for (int i = 0; i < k; i++) {
+        long wall = bench(n, loop);
+        total_time += wall;
+        if (wall < min_time) min_time = wall;
+        if (wall > max_time) max_time = wall;
+      }
+      long avg_time = total_time/k;
+      printf("%d %0.2f %0.2f %0.2f\n", 
+              n, (double)min_time/loop, (double)max_time/loop, (double)avg_time/loop);
+    }
+  }
+\end{minted}
 
 \begin{figure}[h]
-    \centering
-    \begin{tikzpicture}
-    \begin{axis}[
-        xlabel={Iteration},
-        ylabel={Time (ns)},
-        xmode=log,
-        log basis x=10,
-        xmin=1, xmax=1000,
-        ymin=0, ymax=160,
-        xtick={1,10,100,1000},
-        ytick={0,20,40,60,80,100,120,140,160},
-        ymajorgrids=true,
-        grid style=dashed,
-        width=12cm, height=7cm,
-        ]
-        \legend{Normal Condition, Busy Condition}
-        \addplot[color=blue,] table {data/test_clock_accuracy.dat};
-        \addplot[color=red,] table {data/test_clock_accuracy_busy.dat};
-    \end{axis}
+  \centering
+  \begin{tikzpicture}
+  \begin{axis}[
+    xlabel={Array Size(per k elements)},
+    ylabel={Time (ns)},
+    xmode=log,
+    log ticks with fixed point,
+    xmin=1000, xmax=16384000,
+    ymin=0, ymax=20,
+    xtick={1000,2000,4000,8000,16000,32000,64000,128000,256000,512000,1024000,2048000,4096000,8192000,16384000},
+    ytick={0,2,4,6,8,10,12,14,16,18,20},
+    ymajorgrids=true,   
+    grid style=dashed,
+    width=14cm, height=7cm,
+    xticklabels={1,2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384},
+    ]
+    \legend{Min, Max, Avg}
+    \addplot table[x index=0, y index=1] {data/random_access.dat};
+    \addplot table[x index=0, y index=2] {data/random_access.dat};
+    \addplot table[x index=0, y index=3] {data/random_access.dat};
+  \end{axis}
+  
+  \end{tikzpicture}
+  \caption{Random access time in an array}
+  \label{fig:random_access}
+\end{figure}
 
-    \end{tikzpicture}
-    \caption{Comparison between running the program with and without CPU workload}
-    \label{fig:clock_accuracy_busy}
+The execution time is relatively stable around 6 ns for smaller arrays with size less 
+than 16k elements. The time increases as the array size grows, when the size reach between
+64k and 256k elements, the times ranged from 6 ns to 12 ns per operation, with some
+significant fluctuations at certain points. As we increase the array size to more than 512k elements,
+the time becomes more stable around 10 ns for each operation and when the size doubles, the time
+increase a little bit. If the time increases linearly while the array size doubles, the pattern is likely
+to be $O(log(n))$ and the time can be approximated by $T(n) = a + b \cdot log(n)$. We can do another
+experiment foucsing on the bigger array size to verify the pattern. The result is shown in Figure \ref{fig:random_access_big}.
+
+\begin{figure}[h]
+  \centering
+  \begin{tikzpicture}
+  \begin{axis}[
+    xlabel={Array Size(per M elements)},
+    ylabel={Time (ns)},
+    xmode=log,
+    log ticks with fixed point,
+    xmin=1000, xmax=16384000,
+    ymin=0, ymax=20,
+    xtick={16384000,32768000,65536000,131072000,262144000,524288000,1048576000,2097152000,4194304000,8388608000,16777216000},
+    ytick={0,2,4,6,8,10,12,14,16,18,20},
+    ymajorgrids=true,   
+    grid style=dashed,
+    width=14cm, height=7cm,
+    xticklabels={16.4,32.8,65.5,131.0,262.1,524.3,1048.6,2097.1,4194.3,8388.6,16777.2},
+    ]
+    \legend{Min, Max, Avg}
+    \addplot table[x index=0, y index=1] {data/random_access.dat};
+    \addplot table[x index=0, y index=2] {data/random_access.dat};
+    \addplot table[x index=0, y index=3] {data/random_access.dat};
+  \end{axis}
+  
+  \end{tikzpicture}
+  \caption{Random access time in an array}
+  \label{fig:random_access}
 \end{figure}
 
 \section*{Search}

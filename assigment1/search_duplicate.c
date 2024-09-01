@@ -5,23 +5,36 @@
 #include <time.h>
 #include <limits.h>
 
-#include "tool_func.h"
-
+struct timespec t_start, t_stop;
+long nano_seconds(struct timespec *t_start, struct timespec *t_stop);
 long duplicates(int n, int loop);
 
 int main(int argc, char *argv[]) {
-  // int sizes[] = {1000,2000,4000,8000,16000,32000};
   int k = 10;
   int loop = 1000;
   for (int n = 1000; n <= 32000; n *= 2) {
-    long min = LONG_MAX;
+
+    // Time measurement
+    long max_time = LONG_MIN;
+    long min_time = LONG_MAX;
+    long total_time = 0;
+
     for (int i = 0; i < k; i++) {
       long wall = duplicates(n, loop);
-      if (wall < min)
-        min = wall;
+      total_time += wall;
+      if (wall < min_time) min_time = wall;
+      if (wall > max_time) max_time = wall;
     }
-    printf("%d %0.2f ns\n", n, (double)min/loop);
+
+    long avg_time = total_time/k;
+    printf("%d, min: %0.2f, max: %0.2f, avg: %0.2f\n", 
+            n, (double)min_time/loop, (double)max_time/loop, (double)avg_time/loop);
   }
+}
+
+long nano_seconds(struct timespec *t_start, struct timespec *t_stop) {
+  return (t_stop->tv_nsec - t_start->tv_nsec) +
+  (t_stop->tv_sec - t_start->tv_sec)*1000000000;
 }
 
 long duplicates(int n, int loop) {
