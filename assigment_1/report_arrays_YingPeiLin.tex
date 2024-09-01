@@ -194,7 +194,7 @@ significant fluctuations at certain points.
 As the array increases to more than 512k elements,
 the time becomes more stable around 10 ns for each operation and when the size doubles, the time
 increase a little bit. If the time increases linearly while the array size doubles, the pattern is likely
-to be $O(log(n))$ and the time can be approximated by $T(n) = a + b \cdot log(n * loop)$. 
+to be $O(log(n))$, or more precisely, $O(log(n * loop))$.The time can be approximated by $T(n) = a + b \cdot log(n * loop)$. 
 
 We can do another experiment foucsing on the bigger array size to verify the pattern. 
 The result is shown in Figure \ref{fig:random_access_big}.
@@ -344,10 +344,16 @@ is $1/n$, which is the same for all positions. Then, the expected position to fi
 \end{equation}
 
 Thus, the expected time to find the target $T(n)$ will be proportional to $\frac{n+1}{2}$, 
-which is $O(n)$.
+which is $O(n)$, or more precisely, $O(n * loop)$.
 
-\section*{Duplicates}
+\section*{Search for duplicates}
 
+The following code snippet is used to measure the time required to search for duplicates in an array,
+and the result is shown in Figure \ref{fig:search_duplicate}.
+
+Compared to the pervious search, the time required to search for duplicates in an array is much longer, 
+due to the double nested loop and the time complexity is likely to be $O(n^2)$, or more precisely, $O(n^2 * loop)$.
+The time can be approximated by $T(n) = a + b \cdot n^2$.
 
 \begin{minted}{c}
 long duplicates(int n, int loop) {
@@ -377,5 +383,32 @@ long duplicates(int n, int loop) {
   return wall;
 }
 \end{minted}
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+  \begin{axis}[
+    xlabel={Array Size(per elements)},
+    ylabel={Time (ms)},
+    ymin=0, ymax=1800000,
+    ymajorgrids=true,
+    ytick={0,200000,400000,600000,800000,1000000,1200000,1400000,1600000,1800000},
+    grid style=dashed,
+    width=14cm, height=6cm,
+    yticklabels={0,0.2,0.4,0.6,0.8,1.0,1.2,1.4,1.6,1.8},
+    legend pos=outer north east,
+    scaled y ticks=false,
+    scaled x ticks=false,
+    ]
+    \legend{Min, Max, Avg}
+    \addplot table[x index=0, y index=1] {data/search_duplicate.dat};
+    \addplot table[x index=0, y index=2] {data/search_duplicate.dat};
+    \addplot table[x index=0, y index=3] {data/search_duplicate.dat};
+  \end{axis}
+
+  \end{tikzpicture}
+  \caption{Search time for duplicates in an array}
+  \label{fig:search_duplicate}
+\end{figure}
 
 \end{document}
