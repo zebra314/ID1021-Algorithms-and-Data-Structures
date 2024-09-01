@@ -12,23 +12,18 @@ long search(int n, int loop);
 int main(int argc, char *argv[]) {
   int k = 100;
   int loop = 500;
-
-  for (int n = 1000; n <= 32000; n *= 2) {
-
-    // Time measurement
+  for (int n = 1000; n <= 4096000; n += 273000) {
     long max_time = LONG_MIN;
     long min_time = LONG_MAX;
     long total_time = 0;
-
     for (int i = 0; i < k; i++) {
       long wall = search(n, loop);
       total_time += wall;
       if (wall < min_time) min_time = wall;
       if (wall > max_time) max_time = wall;
     }
-
     long avg_time = total_time/k;
-    printf("%d, min: %0.2f, max: %0.2f, avg: %0.2f\n", 
+    printf("%d %0.2f %0.2f %0.2f\n", 
             n, (double)min_time/loop, (double)max_time/loop, (double)avg_time/loop);
   }
 }
@@ -57,6 +52,8 @@ long search(int n, int loop) {
     }
   }
   clock_gettime(CLOCK_MONOTONIC, &t_stop);
+
+  if(sum == 0) return 0;
 
   long wall = nano_seconds(&t_start, &t_stop);
   return wall;

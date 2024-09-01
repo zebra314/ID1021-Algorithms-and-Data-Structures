@@ -5,6 +5,7 @@
 \usepackage{graphicx}
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage{float}
 
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18} 
@@ -39,7 +40,7 @@ int main(int argc, char *argv[]) {
 }
 \end{minted}
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \begin{tikzpicture}
   \begin{axis}[
@@ -54,6 +55,7 @@ int main(int argc, char *argv[]) {
     ymajorgrids=true,
     grid style=dashed,
     width=12cm, height=6cm,
+    legend pos=outer north east,
     ]
   \addplot[color=blue,] table {data/test_clock_accuracy.dat};
   \end{axis}
@@ -78,7 +80,7 @@ Figure \ref{fig:clock_accuracy_busy} is the comparison between using only the te
 web browsing and IDE is open. To avoid the influence from the CPU workload and ensure the accuracy of the 
 time measurement, we should run the program in a quiet enviroment with minimal background processes.
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \begin{tikzpicture}
   \begin{axis}[
@@ -93,6 +95,7 @@ time measurement, we should run the program in a quiet enviroment with minimal b
     ymajorgrids=true,
     grid style=dashed,
     width=12cm, height=7cm,
+    legend pos=outer north east,
     ]
     \legend{Normal Condition, Busy Condition}
     \addplot[color=blue,] table {data/test_clock_accuracy.dat};
@@ -114,46 +117,46 @@ target we want to access. Then, we create another array of size $loop$ with rand
 before and after the loop that accesses the target array using the index array. 
 
 \begin{minted}{c}
-  long bench(int n, int loop) {
-    int *array = (int*)malloc(n*sizeof(int));
-    for (int i = 0; i < n; i++) array[i] = i;
-    
-    int *indx = (int*)malloc(loop*sizeof(int));
-    for (int i = 0; i < loop; i++) indx[i] = rand()%n;
+long bench(int n, int loop) {
+  int *array = (int*)malloc(n*sizeof(int));
+  for (int i = 0; i < n; i++) array[i] = i;
+  
+  int *indx = (int*)malloc(loop*sizeof(int));
+  for (int i = 0; i < loop; i++) indx[i] = rand()%n;
 
-    int sum = 0;
-    clock_gettime(CLOCK_MONOTONIC, &t_start);
-    for (int i = 0; i < loop; i++) sum += array[indx[i]];
-    clock_gettime(CLOCK_MONOTONIC, &t_stop);
+  int sum = 0;
+  clock_gettime(CLOCK_MONOTONIC, &t_start);
+  for (int i = 0; i < loop; i++) sum += array[indx[i]];
+  clock_gettime(CLOCK_MONOTONIC, &t_stop);
 
-    if (sum == 0)
-      return 0;
+  if (sum == 0)
+    return 0;
 
-    long wall = nano_seconds(&t_start, &t_stop);
-    return wall;
-  }
+  long wall = nano_seconds(&t_start, &t_stop);
+  return wall;
+}
 
-  int main(int argc, char *argv[]) {
-    int k = 10;
-    int loop = 1000;
-    for (int n = 1000; n <= 16384000; n *= 2) {
-      long min_time = LONG_MAX;
-      long max_time = 0;
-      long total_time = 0;
-      for (int i = 0; i < k; i++) {
-        long wall = bench(n, loop);
-        total_time += wall;
-        if (wall < min_time) min_time = wall;
-        if (wall > max_time) max_time = wall;
-      }
-      long avg_time = total_time/k;
-      printf("%d %0.2f %0.2f %0.2f\n", 
-              n, (double)min_time/loop, (double)max_time/loop, (double)avg_time/loop);
+int main(int argc, char *argv[]) {
+  int k = 10;
+  int loop = 1000;
+  for (int n = 1000; n <= 16384000; n *= 2) {
+    long min_time = LONG_MAX;
+    long max_time = 0;
+    long total_time = 0;
+    for (int i = 0; i < k; i++) {
+      long wall = bench(n, loop);
+      total_time += wall;
+      if (wall < min_time) min_time = wall;
+      if (wall > max_time) max_time = wall;
     }
+    long avg_time = total_time/k;
+    printf("%d %0.2f %0.2f %0.2f\n", 
+            n, (double)min_time/loop, (double)max_time/loop, (double)avg_time/loop);
   }
+}
 \end{minted}
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \begin{tikzpicture}
   \begin{axis}[
@@ -169,6 +172,7 @@ before and after the loop that accesses the target array using the index array.
     grid style=dashed,
     width=14cm, height=7cm,
     xticklabels={1,2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384},
+    legend pos=outer north east,
     ]
     \legend{Min, Max, Avg}
     \addplot table[x index=0, y index=1] {data/random_access.dat};
@@ -184,12 +188,16 @@ before and after the loop that accesses the target array using the index array.
 The execution time is relatively stable around 6 ns for smaller arrays with size less 
 than 16k elements. The time increases as the array size grows, when the size reach between
 64k and 256k elements, the times ranged from 6 ns to 12 ns per operation, with some
-significant fluctuations at certain points. As we increase the array size to more than 512k elements,
+significant fluctuations at certain points. 
+
+As we increase the array size to more than 512k elements,
 the time becomes more stable around 10 ns for each operation and when the size doubles, the time
 increase a little bit. If the time increases linearly while the array size doubles, the pattern is likely
-to be $O(log(n))$ and the time can be approximated by $T(n) = a + b \cdot log(n)$. We can do another
-experiment foucsing on the bigger array size to verify the pattern. The result is shown in Figure \ref{fig:random_access_big}.
-I also run the program with more bigger array size, however, my computer seems to be unable to handle it.
+to be $O(log(n))$ and the time can be approximated by $T(n) = a + b \cdot log(n)$. 
+
+We can do another experiment foucsing on the bigger array size to verify the pattern. 
+The result is shown in Figure \ref{fig:random_access_big}.
+I also ran the program with more bigger array size, however, my computer seems to be unable to handle it.
 
 As the array size becomes larger, the minimum time increases more stable than the maximum time.
 Because there will be a best case that the operation is completed in the shortest time and no 
@@ -197,7 +205,7 @@ matter how good the other case is, they won't faster than the best case, but can
 On the other hand, the worst case can be so bad that beyond our imagination, and the maximum time
 can be very large.
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \begin{tikzpicture}
   \begin{axis}[
@@ -210,8 +218,9 @@ can be very large.
     ytick={0,5,10,15,20,25,30,35,40},
     ymajorgrids=true,   
     grid style=dashed,
-    width=14cm, height=7cm,
+    width=12cm, height=6cm,
     xticklabels={0.3,0.5,1.0,2,4.1,8.2,16.4,32.8,65.5,131.1},
+    legend pos=outer north east,
     ]
     \legend{Min, Max, Avg}
     \addplot table[x index=0, y index=1] {data/random_access_big.dat};
@@ -225,6 +234,94 @@ can be very large.
 \end{figure}
 
 \section*{Search}
+
+The following code snippet is used to measure the time required to search for random elements in
+an array and the result is shown in Figure \ref{fig:search}.
+
+\begin{minted}{c}
+long search(int n, int loop) {
+  int *array = (int*)malloc(n*sizeof(int));
+  for (int i = 0; i < n; i++) array[i] = rand()%(n*2);
+  
+  int *keys = (int*)malloc(loop*sizeof(int));
+  for (int i = 0; i < loop; i++) keys[i] = rand()%(n*2);
+
+  int sum = 0;
+  clock_gettime(CLOCK_MONOTONIC, &t_start);
+  for (int i = 0; i < loop; i++) {
+    int key = keys[i];
+    for (int j = 0; j < n; j++) {
+      if (key == array[j]) {
+        sum++;
+        break;
+      }
+    }
+  }
+  clock_gettime(CLOCK_MONOTONIC, &t_stop);
+
+  long wall = nano_seconds(&t_start, &t_stop);
+  return wall;
+}
+\end{minted}
+
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+  \begin{axis}[
+    xlabel={Array Size(per k elements)},
+    ylabel={Time (ms)},
+    xmode=log,
+    log ticks with fixed point,
+    xtick={1000,2000,4000,8000,16000,32000,64000,128000,256000,512000,1024000,2048000,4096000},
+    ytick={0,200000,400000,600000,800000,1000000},
+    ymajorgrids=true,     
+    grid style=dashed,
+    width=14cm, height=6cm,
+    xticklabels={1,2,4,8,16,32,64,128,256,512,1024,2048,4096},
+    yticklabels={0,0.25,0.5,0.75,1,1.25},
+    legend pos=outer north east,
+    scaled y ticks=false,
+    ]
+    \legend{Min, Max, Avg}
+    \addplot table[x index=0, y index=1] {data/search_item_v1.dat};
+    \addplot table[x index=0, y index=2] {data/search_item_v1.dat};
+    \addplot table[x index=0, y index=3] {data/search_item_v1.dat};
+  \end{axis}
+
+  \end{tikzpicture}
+  \caption{Search time in an array}
+  \label{fig:search_v1}
+\end{figure}
+
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+  \begin{axis}[
+    xlabel={Array Size(per k elements)},
+    ylabel={Time (ns)},
+    % xmode=log,
+    % log ticks with fixed point,
+    ymin=0, ymax=1100000,
+    % xtick={1000,2000,4000,8000,16000,32000,64000,128000,256000,512000,1024000,2048000,4096000},
+    ymajorgrids=true,     
+    grid style=dashed,
+    width=14cm, height=6cm,
+    % xticklabels={1,2,4,8,16,32,64,128,256,512,1024,2048,4096},
+    legend pos=outer north east,
+    ]
+    \legend{Min, Max, Avg}
+    \addplot table[x index=0, y index=1] {data/search_item_v2.dat};
+    \addplot table[x index=0, y index=2] {data/search_item_v2.dat};
+    \addplot table[x index=0, y index=3] {data/search_item_v2.dat};
+  \end{axis}
+
+  \end{tikzpicture}
+  \caption{Search time in an array}
+  \label{fig:search_v2}
+\end{figure}
+
 
 \section*{Duplicates}
 
