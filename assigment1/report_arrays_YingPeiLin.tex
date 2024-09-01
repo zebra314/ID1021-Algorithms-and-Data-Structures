@@ -189,6 +189,13 @@ the time becomes more stable around 10 ns for each operation and when the size d
 increase a little bit. If the time increases linearly while the array size doubles, the pattern is likely
 to be $O(log(n))$ and the time can be approximated by $T(n) = a + b \cdot log(n)$. We can do another
 experiment foucsing on the bigger array size to verify the pattern. The result is shown in Figure \ref{fig:random_access_big}.
+I also run the program with more bigger array size, however, my computer seems to be unable to handle it.
+
+As the array size becomes larger, the minimum time increases more stable than the maximum time.
+Because there will be a best case that the operation is completed in the shortest time and no 
+matter how good the other case is, they won't faster than the best case, but can be close to it.
+On the other hand, the worst case can be so bad that beyond our imagination, and the maximum time
+can be very large.
 
 \begin{figure}[h]
   \centering
@@ -198,24 +205,23 @@ experiment foucsing on the bigger array size to verify the pattern. The result i
     ylabel={Time (ns)},
     xmode=log,
     log ticks with fixed point,
-    xmin=1000, xmax=16384000,
-    ymin=0, ymax=20,
-    xtick={16384000,32768000,65536000,131072000,262144000,524288000,1048576000,2097152000,4194304000,8388608000,16777216000},
-    ytick={0,2,4,6,8,10,12,14,16,18,20},
+    ymin=2, ymax=40,
+    xtick={256000,512000,1024000,2048000,4096000,8192000,16384000,32768000,65536000,131072000},
+    ytick={0,5,10,15,20,25,30,35,40},
     ymajorgrids=true,   
     grid style=dashed,
     width=14cm, height=7cm,
-    xticklabels={16.4,32.8,65.5,131.0,262.1,524.3,1048.6,2097.1,4194.3,8388.6,16777.2},
+    xticklabels={0.3,0.5,1.0,2,4.1,8.2,16.4,32.8,65.5,131.1},
     ]
     \legend{Min, Max, Avg}
-    \addplot table[x index=0, y index=1] {data/random_access.dat};
-    \addplot table[x index=0, y index=2] {data/random_access.dat};
-    \addplot table[x index=0, y index=3] {data/random_access.dat};
+    \addplot table[x index=0, y index=1] {data/random_access_big.dat};
+    \addplot table[x index=0, y index=2] {data/random_access_big.dat};
+    \addplot table[x index=0, y index=3] {data/random_access_big.dat};
   \end{axis}
-  
+
   \end{tikzpicture}
-  \caption{Random access time in an array}
-  \label{fig:random_access}
+  \caption{Random access time in an array with bigger size}
+  \label{fig:random_access_big}
 \end{figure}
 
 \section*{Search}

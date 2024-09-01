@@ -23,8 +23,8 @@ long test(){
 
 int main(int argc, char *argv[]) {    
   int k = 10;
-  int loop = 1000;
-  for (int n = 1000; n <= 16384000; n *= 2) {
+  int loop = 25;
+  for (int n = 256000; n < 262144000; n *= 2) {
     long min_time = LONG_MAX;
     long max_time = 0;        
     long total_time = 0;
@@ -65,8 +65,8 @@ long bench(int n, int loop) {
   for (int i = 0; i < loop; i++) sum += array[indx[i]];  
   clock_gettime(CLOCK_MONOTONIC, &t_stop);
 
-  // if (sum == 0)
-  //   return 0;
+  if (sum == 0)
+    return 0;
 
   long wall = nano_seconds(&t_start, &t_stop);
   return wall;
