@@ -57,19 +57,19 @@ int main() {
     } else if(strcmp(buffer, "+\n") == 0) {
       int a = pop(stk);
       int b = pop(stk);
-      push(stk, a+b);
+      push(stk, b+a);
     } else if(strcmp(buffer, "-\n") == 0) {
       int a = pop(stk);
       int b = pop(stk);
-      push(stk, a-b);
+      push(stk, b-a);
     } else if(strcmp(buffer, "*\n") == 0) {
       int a = pop(stk);
       int b = pop(stk);
-      push(stk, a*b);
+      push(stk, b*a);
     } else if(strcmp(buffer, "/\n") == 0) {
       int a = pop(stk);
       int b = pop(stk);
-      push(stk, a/b);
+      push(stk, b/a);
     } else {
       int val = atoi(buffer);
       push(stk, val);
