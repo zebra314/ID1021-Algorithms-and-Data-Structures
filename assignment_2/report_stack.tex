@@ -25,8 +25,121 @@
 
 \section*{Static stack}
 
+To implement a static stack in C, we can use an array to store the elements and an integer to record
+the current size of the stack. The following code shows how I initialize the stack. 
+
+\begin{minted}{c}
+stack *new_stack(int size) {
+  int *array = (int*)malloc(size*sizeof(int));
+  stack *stk = (stack*)malloc(sizeof(stack));
+  stk->top = 0; // Point to the above the stack.
+  stk->size = size;
+  stk->array = array;
+  return stk;
+}
+\end{minted}
+
+The top integer points to the next avaialble index in the stack. For expample, if the top is 
+at index 3, this means that the stack has 3 elements stored at index 0, 1, and 2. When the stack
+is empty, the top equals to 0. And the following code shows how to push and pop elements from
+the stack.
+
+\begin{minted}{c}
+void push(stack *stk, int val) {
+  if(stk->top >= (stk->size)) {
+    printf("Overflow ");
+  } else {
+    stk->array[stk->top] = val;
+    stk->top++;
+  }
+}
+
+int pop(stack *stk) {
+  if(stk->top == 0) {
+    printf("Underflow ");
+    return INT_MIN;
+  } else {
+    stk->top--;
+    return stk->array[stk->top];
+  }
+}
+\end{minted}
+
+We check for overflow when pushing an element and check for underflow when popping an element.
+Since C doesn't support excpetion handling, we need to check the stack size before pushing 
+and poping. If the stack is empty, we return {\tt INT\_MIN} to indicate that the stack is empty and
+if the stack is full, we just need to print out the error message.
+
 \section*{Dynamic stack}
 
+To implement a dynamic stack, we need to resize the stack when it's full. I made this modification
+in the push function. First, I check if the stack is full. If it is, then create a new array 
+with the double size and copy the data from the old one to the new one. At the end, free the old
+array and set old array to the new one. By adding the following code to the push function, we can
+implement the dynamic stack.
+
+\begin{minted}{c}
+if (stk->top == stk->size) {
+  int size = stk->size * 2;
+  int *copy = (int*)malloc(size*sizeof(int));
+  stk->size = size;
+  for (int i = 0; i < stk->top; i++) {
+    copy[i] = stk->array[i];
+  }
+  free(stk->array);
+  stk->array = copy;
+}
+\end{minted}
+
+Unless there is a huge amount of unused memory, I decide not to shrink the stack size because 
+resizing and copying the data is a costly operation. For this case, I just let the stack grow.
+
+If we want to shrink the stack size, we can modify the push function to check if there is
+a lot of unused memory. If the unused memory is more than a certain threshold (e.g. 75\%),
+then we can shrink the stack size by half. By adding the following code to the push function,
+we can shrink the stack size, which is similar we did in the push function.
+
+\begin{minted}{c}
+if (stk->top < stk->size / 4) {
+  int size = stk->size / 2;
+  int *copy = (int*)malloc(size*sizeof(int));
+  stk->size = size;
+  for (int i = 0; i < stk->top; i++) {
+    copy[i] = stk->array[i];
+  }
+  free(stk->array);
+  stk->array = copy;
+}
+\end{minted}
+
 \section*{The Calculator}
+
+The HP35 calculator uses reverse Polish notation to perform the calculation. We take the input from the user
+and store the numbers in the stack. If the input is a
+number then push it to the stack. If it's an operator, then pop two numbers from the stack, and
+perform the operation.
+
+For example, if the input is {\tt 4 2 3 * 4 + 4 * + 2 -}, then the stack will look like the following table.
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|c|p{4cm}|}
+  \hline
+  \textbf{Input} & \textbf{Stack} \\ 
+                 & \textbf{(Top marked with \textbf{*})} \\ \hline
+  4      & 4\textbf{*} \\ \hline
+  2      & 4 2\textbf{*} \\ \hline
+  3      & 4 2 3\textbf{*} \\ \hline
+  *      & 4 6\textbf{*} \\ \hline
+  4      & 4 6 4\textbf{*} \\ \hline
+  +      & 4 10\textbf{*} \\ \hline
+  4      & 4 10 4\textbf{*} \\ \hline
+  *      & 4 40\textbf{*} \\ \hline
+  +      & 44\textbf{*} \\ \hline
+  2      & 44 2\textbf{*} \\ \hline
+  -      & 42\textbf{*} \\ \hline
+  \end{tabular}
+  \caption{HP-35 Calculator Steps (Top element marked)}
+\end{table}
 
 \end{document}

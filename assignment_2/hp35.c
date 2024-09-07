@@ -74,6 +74,10 @@ int main() {
       int val = atoi(buffer);
       push(stk, val);
     }
+    for(int i = 0; i < stk->top; i++) {
+      printf("%d ", stk->array[i]);
+    }
+    printf("\n");
   }
   printf("the result is: %d\n\n", pop(stk));
   printf("I love reversed polish notation, don't you?\n");
