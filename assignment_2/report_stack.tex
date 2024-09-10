@@ -32,7 +32,7 @@ the current size of the stack. The following code shows how I initialize the sta
 stack *new_stack(int size) {
   int *array = (int*)malloc(size*sizeof(int));
   stack *stk = (stack*)malloc(sizeof(stack));
-  stk->top = 0; // Point to the above the stack.
+  stk->top = 0;
   stk->size = size;
   stk->array = array;
   return stk;
@@ -41,7 +41,13 @@ stack *new_stack(int size) {
 
 The top integer points to the next avaialble index in the stack. For expample, if the top is 
 at index 3, this means that the stack has 3 elements stored at index 0, 1, and 2. When the stack
-is empty, the top equals to 0. And the following code shows how to push and pop elements from
+is empty, the top equals to 0. 
+
+Whenever we need to push an element, we store the element at index equal to the top and then
+increase the top by 1. When we need to pop an elementm, we decrease the top first(because the top
+element is at index {\tt top-1}) and then return the element at index {\tt top-1}.
+
+The following code shows how to push and pop elements from
 the stack.
 
 \begin{minted}{c}
@@ -114,10 +120,40 @@ if (stk->top < stk->size / 4) {
 
 \section*{The Calculator}
 
-The HP35 calculator uses reverse Polish notation to perform the calculation. We take the input from the user
-and store the numbers in the stack. If the input is a
-number then push it to the stack. If it's an operator, then pop two numbers from the stack, and
-perform the operation.
+The HP35 calculator uses reverse Polish notation to perform the calculation. 
+The user should input one number or a operator at a time following the sequence of reverse Polish notation.
+If the input is a number then push it to the stack. 
+If it's an operator, then pop two numbers from the stack, and perform the operation.
+If the input is an empty line, then the program will stop. Following is a part of the code.
+
+\begin{minted}{c}
+while(run) {
+  printf(" > ");
+  getline(&buffer, &n, stdin);
+  if (strcmp(buffer, "\n") == 0) {
+    run = false;
+  } else if(strcmp(buffer, "+\n") == 0) {
+    int a = pop(stk);
+    int b = pop(stk);
+    push(stk, b+a);
+  } else if(strcmp(buffer, "-\n") == 0) {
+    int a = pop(stk);
+    int b = pop(stk);
+    push(stk, b-a);
+  } else if(strcmp(buffer, "*\n") == 0) {
+    int a = pop(stk);
+    int b = pop(stk);
+    push(stk, b*a);
+  } else if(strcmp(buffer, "/\n") == 0) {
+    int a = pop(stk);
+    int b = pop(stk);
+    push(stk, b/a);
+  } else {
+    int val = atoi(buffer);
+    push(stk, val);
+  }
+}
+\end{minted}
 
 For example, if the input is {\tt 4 2 3 * 4 + 4 * + 2 -}, then the stack will look like the following table.
 
@@ -141,5 +177,16 @@ For example, if the input is {\tt 4 2 3 * 4 + 4 * + 2 -}, then the stack will lo
   \end{tabular}
   \caption{HP-35 Calculator Steps (Top element marked)}
 \end{table}
+
+\section*{Conclusion}
+
+In this report, I tried to implement static, dynamic stack and a HP35 calculator in C.
+Because C doesn't support exception handling, so what we can do is to return a certain 
+value to indicate the error, print out the error message or simply exit the program.
+The dynamic stack can grow but doesn't shrink unless we add the code to shrink the stack size.
+The HP35 calculator uses reverse Polish notation to perform the calculation. The advantage of
+using reverse Polish notation is that we don't need to worry about the order of the operation, 
+stuff like processing the user input, also the stack make it easier to calculate the result.
+When the user input an operator, we just need to pop two numbers from the stack and perform the operation.
 
 \end{document}

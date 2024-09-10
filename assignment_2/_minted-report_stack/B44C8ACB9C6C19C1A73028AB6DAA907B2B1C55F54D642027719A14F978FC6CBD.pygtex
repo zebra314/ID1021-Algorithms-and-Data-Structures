@@ -2,7 +2,7 @@
 \PYG{n}{stack}\PYG{+w}{ }\PYG{o}{*}\PYG{n+nf}{new\PYGZus{}stack}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{size}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
 \PYG{+w}{  }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{array}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{(}\PYG{k+kt}{int}\PYG{o}{*}\PYG{p}{)}\PYG{n}{malloc}\PYG{p}{(}\PYG{n}{size}\PYG{o}{*}\PYG{k}{sizeof}\PYG{p}{(}\PYG{k+kt}{int}\PYG{p}{));}
 \PYG{+w}{  }\PYG{n}{stack}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{stk}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{stack}\PYG{o}{*}\PYG{p}{)}\PYG{n}{malloc}\PYG{p}{(}\PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{stack}\PYG{p}{));}
-\PYG{+w}{  }\PYG{n}{stk}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{top}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{// Point to the above the stack.}
+\PYG{+w}{  }\PYG{n}{stk}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{top}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}
 \PYG{+w}{  }\PYG{n}{stk}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{size}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{size}\PYG{p}{;}
 \PYG{+w}{  }\PYG{n}{stk}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{array}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{array}\PYG{p}{;}
 \PYG{+w}{  }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{stk}\PYG{p}{;}
