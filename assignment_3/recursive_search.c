@@ -5,7 +5,7 @@
 
 
 typedef struct {
-  int ***array_list; // [[array1, array2, ...xloop], [array1, array2, ...xloop], ...xn]
+  int ***array_list; // [[array1, array2, ...x loop], [array1, array2, ...x loop], ...x n]
   int **key_list;
 } TestData;
 
@@ -13,12 +13,12 @@ struct timespec t_start, t_stop;
 long nano_seconds(struct timespec *t_start, struct timespec *t_stop);
 int *get_sorted_array(int n);
 int get_random_exisited_key(int *array, int size);
-bool recursive(int array[], int length, int key, int first, int last);
+int recursive(int array[], int length, int key, int first, int last);
 TestData get_test_data(int loop, int array_size_list[], int n);
 
 int main() {
   srand(time(NULL));  // Seed the random number generator
-  int loop = 500;
+  int loop = 1000;
   int array_size[] = {10, 100, 1000, 10000, 100000, 1000000};
   int n = sizeof(array_size) / sizeof(array_size[0]);
 
@@ -29,14 +29,15 @@ int main() {
      * iterations and divide the total time by the number of iterations, instead of
      * measuring the time for each iteration and summing them up.
      */
+    int calls = 0;
     clock_gettime(CLOCK_MONOTONIC, &t_start);
     for(int j = 0; j < loop; j++) {
-      recursive(test_data.array_list[i][j], array_size[i], test_data.key_list[i][j], 0, array_size[i]-1);
+      calls += recursive(test_data.array_list[i][j], array_size[i], test_data.key_list[i][j], 0, array_size[i]-1);
     }
     clock_gettime(CLOCK_MONOTONIC, &t_stop);
     
     long total_time = nano_seconds(&t_start, &t_stop);
-    printf("%d %0.2ld\n", array_size[i], total_time/loop);
+    printf("%d %0.2d\n", array_size[i], calls/loop);
   }
 
   for (int i = 0; i < sizeof(array_size) / sizeof(array_size[0]); i++) {
@@ -62,7 +63,7 @@ TestData get_test_data(int loop, int array_size_list[], int n) {
       test_data.key_list[i][j] = key;
     }
   }
-  printf("Test data generated\n");
+  // printf("Test data generated\n");
   return test_data;
 }
 
@@ -86,25 +87,32 @@ int get_random_exisited_key(int *array, int size) {
   return array[index];
 }
 
-bool recursive(int array[], int length, int key, int first, int last) {
-  while (true) {
-    // jump to the middle
-    int index = (first + last) / 2;
-    if (array[index] == key) {
-      return true;
-    }
+// bool recursive(int array[], int length, int key, int first, int last) {
+//   int index = (first + last) / 2; // jump to the middle
+//   if (array[index] == key) {
+//     return true;
+//   } else if (array[index] < key && index < last) {
+//     first = index + 1;
+//     recursive(array, length, key, first, last);
+//   } else if (array[index] > key && index > first) {
+//     last = index - 1;
+//     recursive(array, length, key, first, last);
+//   } else {
+//     return false;
+//   }
+// }
 
-    if (array[index] < key && index < last) {
-      first = index + 1;
-      recursive(array, length, key, first, last);
-    }
-
-    if (array[index] > key && index > first) {
-      last = index - 1;
-      recursive(array, length, key, first, last);
-    }
-
-    // Why do we land here? What should we do?
-    return false;
+int recursive(int array[], int length, int key, int first, int last) {
+  int index = (first + last) / 2; // jump to the middle
+  if (array[index] == key) {
+    return 1;
+  } else if (array[index] < key && index < last) {
+    first = index + 1;
+    return recursive(array, length, key, first, last) + 1;
+  } else if (array[index] > key && index > first) {
+    last = index - 1;
+    return recursive(array, length, key, first, last) + 1;
+  } else {
+    return 1;
   }
 }

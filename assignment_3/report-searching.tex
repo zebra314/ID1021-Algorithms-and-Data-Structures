@@ -173,4 +173,90 @@ $53.17 * \log_{2}(64M) - 239.86 = 1134.84$ ms $\approx 1100 $ ms.
 \end{figure}
 
 \section*{Recursive Binary Search}
+
+The following code implements the recursive binary search algorithm.
+The difference between the original binary search and the recursive binary search is that
+the recursive binary search calls itself to search the left or right side of the
+array while the original binary search uses a while loop to search the array.
+
+\begin{minted}{c}
+bool recursive(int array[], int length, int key, int first, int last) {
+  int index = (first + last) / 2; // jump to the middle
+  if (array[index] == key) {
+    return true;
+  } else if (array[index] < key && index < last) {
+    first = index + 1;
+    recursive(array, length, key, first, last);
+  } else if (array[index] > key && index > first) {
+    last = index - 1;
+    recursive(array, length, key, first, last);
+  } else {
+    return false;
+  }
+}
+\end{minted}
+
+The time taken to perform recursive binary search is shown in the Figure \ref{fig:recursive_search},
+which is similar to the binary search.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+  \begin{axis}[
+    xlabel={Array Size (per element)},
+    ylabel={Time (ms)},
+    xmode=log,
+    log basis x=10,
+    ymajorgrids=true,
+    grid style=dashed,
+    width=12cm, height=6cm,
+    legend pos=outer north east,
+    scaled y ticks=false,
+    scaled x ticks=false,
+    % y filter/.code={\pgfmathparse{#1/1000000}\pgfmathresult},
+    % x filter/.code={\pgfmathparse{#1/1000000}\pgfmathresult},
+    ]
+  \addplot[color=blue,] table {data/recursive.dat};
+  \end{axis}
+
+  \end{tikzpicture}
+  \caption{Time taken to search using regression binary search}
+  \label{fig:recursive_search}
+\end{figure}
+
+Though the recursive binary search is more readable and easier to implement, 
+it uses more memory then the original one, because when the function calls itself,
+it leaves the current function in the stack and enters a new function.
+
+When it is n levels deep, we have n stack frames in the memory.
+The memory complexity of the recursive binary 
+search is proportional to the depth of the recursion,  
+which is $O(\log n)$ while the original binary search is $O(1)$.
+
+The call times of the recursive binary search is shown in the Figure \ref{fig:recursive_call},
+which is proportional to the logarithm of the size of the array.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+  \begin{axis}[
+    xlabel={Array Size (per element)},
+    ylabel={Time (ms)},
+    xmode=log,
+    log basis x=10,
+    ymajorgrids=true,
+    grid style=dashed,
+    width=12cm, height=6cm,
+    legend pos=outer north east,
+    scaled y ticks=false,
+    scaled x ticks=false,
+    ]
+  \addplot[color=blue,] table {data/recursive_call_times.dat};
+  \end{axis}
+
+  \end{tikzpicture}
+  \caption{Call times of the recursive binary search}
+  \label{fig:recursive_call}
+\end{figure}
+
 \end{document}
