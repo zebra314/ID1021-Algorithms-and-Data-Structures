@@ -25,3 +25,6 @@
 *.synctex.gz(busy)
 *.pdfsync
 *.pyg
+
+# Python generated files
+venv

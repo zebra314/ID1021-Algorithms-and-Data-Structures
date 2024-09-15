@@ -1,0 +1,10 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import} \PYG{n+nn}{numpy} \PYG{k}{as} \PYG{n+nn}{np}
+\PYG{k+kn}{import} \PYG{n+nn}{matplotlib.pyplot} \PYG{k}{as} \PYG{n+nn}{plt}
+\PYG{n}{data} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{loadtxt}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}./data/binary\PYGZus{}search.dat\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{array\PYGZus{}size} \PYG{o}{=} \PYG{n}{data}\PYG{p}{[:,} \PYG{l+m+mi}{0}\PYG{p}{]}
+\PYG{n}{log\PYGZus{}array\PYGZus{}size} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{log2}\PYG{p}{(}\PYG{n}{array\PYGZus{}size}\PYG{p}{)}
+\PYG{n}{time\PYGZus{}ms} \PYG{o}{=} \PYG{n}{data}\PYG{p}{[:,} \PYG{l+m+mi}{1}\PYG{p}{]}
+\PYG{n}{a}\PYG{p}{,} \PYG{n}{b} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{polyfit}\PYG{p}{(}\PYG{n}{log\PYGZus{}array\PYGZus{}size}\PYG{p}{,} \PYG{n}{time\PYGZus{}ms}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}Linear regression equation: Time = }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{a}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ * log2(ArraySize) + }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{b}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{Verbatim}
