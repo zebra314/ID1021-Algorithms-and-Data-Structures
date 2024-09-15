@@ -18,7 +18,7 @@ TestData get_test_data(int loop, int array_size_list[], int n);
 
 int main() {
   srand(time(NULL));  // Seed the random number generator
-  int loop = 500;
+  int loop = 1000;
   int array_size[] = {10, 100, 1000, 10000, 100000, 1000000};
   int n = sizeof(array_size) / sizeof(array_size[0]);
 
@@ -59,7 +59,7 @@ TestData get_test_data(int loop, int array_size_list[], int n) {
       test_data.key_list[i][j] = key;
     }
   }
-  printf("Test data generated\n");
+  // printf("Test data generated\n");
   return test_data;
 }
 

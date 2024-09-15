@@ -24,8 +24,149 @@
 \maketitle
 
 \section*{Unsorted Search}
+The following code search a value in an unsorted array. To prevent the influence of overhead,
+I made a little change to how the test data is generated. Originally, the test data is generated separately
+in each iteration. Now, the test data is generated once and the clock get time function is called before and after
+the for loop that iterates through different array sizes.
+
+\begin{minted}{c}
+int main() {
+  srand(time(NULL));
+  int loop = 1000;
+  int array_size[] = {10, 100, 1000, 10000, 100000, 1000000};
+  int n = sizeof(array_size) / sizeof(array_size[0]);
+  TestData test_data = get_test_data(loop, array_size, n);
+  for(int i = 0; i < n; i++) {
+    clock_gettime(CLOCK_MONOTONIC, &t_start);
+    for(int j = 0; j < loop; j++) {
+      search(test_data.array_list[i][j], array_size[i], test_data.key_list[i][j]);
+    }
+    clock_gettime(CLOCK_MONOTONIC, &t_stop);
+    printf("%d %0.2ld\n", array_size[i], nano_seconds(&t_start, &t_stop)/loop);
+  }
+}
+\end{minted}
+
+The result is shown in the Figure \ref{fig:unsorted_search}. It shows that the time taken to 
+search linearly in an unsorted array is linearly proportional to the size of the array.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+  \begin{axis}[
+    xlabel={Array Size (per M element)},
+    ylabel={Time (ms)},
+    ymajorgrids=true,
+    grid style=dashed,
+    width=12cm, height=6cm,
+    legend pos=outer north east,
+    scaled y ticks=false,
+    scaled x ticks=false,
+    y filter/.code={\pgfmathparse{#1/1000000}\pgfmathresult},
+    x filter/.code={\pgfmathparse{#1/1000000}\pgfmathresult},
+    ]
+  \addplot[color=blue,] table {data/unsorted_search.dat};
+  \end{axis}
+
+  \end{tikzpicture}
+  \caption{Time taken to search linearly in an unsorted array}
+  \label{fig:unsorted_search}
+\end{figure}
 
 \section*{Binary Search}
 
-\section*{Recursive Programming}
+The following code implements the binary seach algorithm. At the beginning, the {\tt first}
+and {\tt last} index is set to upper and lower bound of the array.
+The while loop will continue until the key is found or the first index is greater 
+than the last index, which means the key is not found.
+The {\tt index} is calculated by taking the average of the first and 
+last index. If the value at the index is equal to the key, the function will return 
+true. 
+
+If the value at the index is less than the key and the index is less than the 
+last index, which means the key is at the right side of the index.
+The first index will be updated to index+1, the range of search shrinks to only
+the right side of the {\tt index}.
+
+If the value at the index is greater than the key and the index is greater than 
+the first index, which means the key is at the left side of the index.
+The last index will be updated to index-1, the range of search shrinks to only
+the left side of the {\tt index}.
+
+\begin{minted}{c}
+bool binary_search(int array[], int length, int key) {
+  int first = 0;
+  int last = length-1;
+  while (true) {
+    int index = (first + last) / 2; // jump to the middle
+    if (array[index] == key) {
+      return true;
+    } else if (array[index] < key && index < last) {
+      first = index + 1;
+    }else if (array[index] > key && index > first) {
+      last = index - 1;
+    } else {
+      return false; // Not found
+    }
+  }
+}
+\end{minted}
+
+The result is shown in the Figure \ref{fig:binary_search}. 
+The time taken to perform binary search is proportional to the logarithm of the 
+size of the array. This is because the binary search algorithm divides 
+the array into half in each iteration, the number of iteration then will be 
+proportional to $\log_{2}(\text{size of the array})$, namely $O(\log n)$.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+  \begin{axis}[
+    xlabel={Array Size (per element)},
+    ylabel={Time (ms)},
+    xmode=log,
+    log basis x=10,
+    ymajorgrids=true,
+    grid style=dashed,
+    width=12cm, height=6cm,
+    legend pos=outer north east,
+    scaled y ticks=false,
+    scaled x ticks=false,
+    % y filter/.code={\pgfmathparse{#1/1000000}\pgfmathresult},
+    % x filter/.code={\pgfmathparse{#1/1000000}\pgfmathresult},
+    ]
+  \addplot[color=blue,] table {data/binary_search.dat};
+  \end{axis}
+
+  \end{tikzpicture}
+  \caption{Time taken to search using binary search}
+  \label{fig:binary_search}
+\end{figure}
+
+To estimate the time it takes to search in an array of size $64M$, I first have to
+find the approximate time function that fits the data, which show in the table below.
+
+% \begin{tikzpicture}
+%   \begin{axis}[
+%       title={Binary Search Time},
+%       xlabel={Array Size},
+%       ylabel={Time (ms)},
+%       xmode=log,
+%       log basis x={10},
+%       ymode=log,
+%       log basis y={10},
+%       xmin=10, xmax=100000000,
+%       ymin=0.0001, ymax=0.0002, % Adjust these limits based on your actual data range
+%       legend pos=north west,
+%       grid=both,
+%       minor tick num=1,
+%   ]
+  
+%   \addplot table [x=ArraySize, y=Time, col sep=space] {./data/binary_search.dat};
+%   \legend{Binary Search}
+%   \end{axis}
+% \end{tikzpicture}
+
+
+\section*{Recursive Binary Search}
 \end{document}

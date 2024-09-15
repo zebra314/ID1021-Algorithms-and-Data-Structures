@@ -18,8 +18,8 @@ TestData get_test_data(int loop, int array_size_list[], int n);
 
 int main() {
   srand(time(NULL));  // Seed the random number generator
-  int loop = 500;
-  int array_size[] = {10, 100, 1000, 10000, 100000, 1000000};
+  int loop = 1000;
+  int array_size[] = {10, 100, 1000, 5000, 10000, 50000, 100000, 500000, 1000000};
   int n = sizeof(array_size) / sizeof(array_size[0]);
 
   TestData test_data = get_test_data(loop, array_size, n);
@@ -58,7 +58,7 @@ TestData get_test_data(int loop, int array_size_list[], int n) {
       test_data.key_list[i][j] = key;
     }
   }
-  printf("Test data generated\n");
+  // printf("Test data generated\n");
   return test_data;
 }
 
@@ -86,26 +86,19 @@ bool binary_search(int array[], int length, int key) {
   int first = 0;
   int last = length-1;
   while (true) {
-    // jump to the middle
-    int index = (first + last) / 2;
-    // printf("%d %d %d %d\n",array[first], array[index], array[last], key);
+    int index = (first + last) / 2; // jump to the middle
+
     if (array[index] == key) {
       return true;
-    }
-
-    if (array[index] < key && index < last) {
-      // what is the first possible page?
+    } else if (array[index] < key && index < last) {
       first = index + 1;
       continue;
-    }
-
-    if (array[index] > key && index > first) {
-      // what is the last possible page?
+    } else if (array[index] > key && index > first) {
       last = index - 1;
       continue;
+    } else {
+      // Not found
+      return false;
     }
-
-    // Why do we land here? What should we do?
-    return false;
   }
 }

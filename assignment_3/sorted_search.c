@@ -59,7 +59,7 @@ TestData get_test_data(int loop, int array_size_list[], int n) {
       test_data.key_list[i][j] = key;
     }
   }
-  printf("Test data generated\n");
+  // printf("Test data generated\n");
   return test_data;
 }
 
