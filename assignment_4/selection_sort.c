@@ -19,11 +19,32 @@ void selection_sort(int *array, int length);
 
 int main() {
   srand(time(NULL));  // Seed the random number generator
-  int loop = 500;
-  int array_size[] = {10, 100, 1000, 10000, 100000, 1000000};
+  int loop = 100;
+  int array_size[] = {10, 100, 1000, 10000, 100000};
   int n = sizeof(array_size) / sizeof(array_size[0]);
   TestData test_data = get_test_data(array_size, n, loop);
-  printf("Test data generated\n");
+
+  for(int i = 0; i < n; i++) {
+    int length = array_size[i];
+
+    clock_gettime(CLOCK_MONOTONIC, &t_start);
+    for(int j = 0; j < loop; j++) {
+      int *array = test_data.array_list[i][j];
+      selection_sort(array, length);
+    }
+    clock_gettime(CLOCK_MONOTONIC, &t_stop);
+
+    long elapsed_time = nano_seconds(&t_start, &t_stop);
+    printf("%d %ld\n", length, elapsed_time/loop);
+  }
+
+  // Free memory
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < loop; j++) {
+      free(test_data.array_list[i][j]);
+    }
+    free(test_data.array_list[i]);
+  }
 }
 
 long nano_seconds(struct timespec *t_start, struct timespec *t_stop) {
@@ -54,5 +75,11 @@ int *get_unsorted_array(int length) {
 }
 
 void selection_sort(int *array, int length) {
-  ;
+  for (int i = 0; i < length; i++) {
+    int candidate = array[i];
+    for (int j = i; j < length ; j++) {
+      candidate = array[j] < candidate ? array[j] : candidate; 
+    }
+    array[i] = candidate;
+  }
 }
