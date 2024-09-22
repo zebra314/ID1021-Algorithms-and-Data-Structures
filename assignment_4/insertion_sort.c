@@ -32,6 +32,11 @@ int main() {
     for(int j = 0; j < loop; j++) {
       int *array = test_data.array_list[i][j];
       insertion_sort(array, length);
+
+      if(!check_sorted(array, length)) {
+        printf("Array is not sorted\n");
+        return 1;
+      }
     }
     clock_gettime(CLOCK_MONOTONIC, &t_stop);
 

@@ -13,6 +13,7 @@ struct timespec t_start, t_stop;
 long nano_seconds(struct timespec *t_start, struct timespec *t_stop);
 int *get_unsorted_array(int length);
 TestData get_test_data(int array_size_list[], int n, int loop);
+bool check_sorted(int *array, int length);
 
 // Sorting function
 void selection_sort(int *array, int length);
@@ -31,6 +32,11 @@ int main() {
     for(int j = 0; j < loop; j++) {
       int *array = test_data.array_list[i][j];
       selection_sort(array, length);
+
+      if(!check_sorted(array, length)) {
+        printf("Array is not sorted\n");
+        return 1;
+      }
     }
     clock_gettime(CLOCK_MONOTONIC, &t_stop);
 
@@ -72,6 +78,15 @@ int *get_unsorted_array(int length) {
     array[i] = rand();
   }
   return array;
+}
+
+bool check_sorted(int *array, int length) {
+  for (int i = 0; i < length - 1; i++) {
+    if (array[i] > array[i + 1]) {
+      return false;
+    }
+  }
+  return true;
 }
 
 void selection_sort(int *array, int length) {
