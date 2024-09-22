@@ -18,9 +18,12 @@ long nano_seconds(struct timespec *t_start, struct timespec *t_stop);
 int *get_unsorted_array(int length);
 TestData get_test_data(int array_size_list[], int n, int loop);
 bool check_sorted(int *array, int length);
+void swap(int *a, int *b);
 
 // Sorting functions
-Array quick_sort(Array array);
+void quick_sort(Array *array, int start, int end);
+int partition(Array *array, int start, int end);
+
 
 int main() {
   srand(time(NULL));  // Seed the random number generator
@@ -33,10 +36,13 @@ int main() {
     clock_gettime(CLOCK_MONOTONIC, &t_start);
     for(int j = 0; j < loop; j++) {
       Array array = test_data.array_list[i][j];
-      Array sorted = quick_sort(array);
-      free(sorted.array);  // Free the sorted array
+      quick_sort(&array, 0, array.length - 1);
     }
     clock_gettime(CLOCK_MONOTONIC, &t_stop);
+
+    if (!check_sorted(test_data.array_list[i][0].array, array_size[i])) {
+      printf("Array is not sorted\n");
+    }
 
     long elapsed_time = nano_seconds(&t_start, &t_stop);
     printf("%d %ld\n", array_size[i], elapsed_time/loop);
@@ -89,31 +95,29 @@ bool check_sorted(int *array, int length) {
   return true;
 }
 
-Array quick_sort(Array array) {
-  if (array.length <= 1) return array;
-
-  Array left, right;
-  left.length = array.length / 2;
-  right.length = array.length - left.length;
-
-  left.array = (int*)malloc(left.length * sizeof(int));
-  right.array = (int*)malloc(right.length * sizeof(int));
-
-  for (int i = 0; i < left.length; i++) {
-    left.array[i] = array.array[i];
+void quick_sort(Array *array, int start, int end) {
+  if (start < end) {
+    int pivot = partition(array, start, end);
+    quick_sort(array, start, pivot - 1);
+    quick_sort(array, pivot + 1, end);
   }
-  for (int i = 0; i < right.length; i++) {
-    right.array[i] = array.array[left.length + i];
+}
+
+int partition(Array *array, int start, int end) {
+  int pivot = array->array[end];
+  int i = start - 1;
+  for (int j = start; j < end; j++) {
+    if (array->array[j] < pivot) {
+      i++;
+      swap(&array->array[i], &array->array[j]);
+    }
   }
+  swap(&array->array[i + 1], &array->array[end]);
+  return i + 1;
+}
 
-  left = merge_sort(left);
-  right = merge_sort(right);
-
-  Array merged = merge_array(left, right);
-
-  // Free temporary arrays
-  free(left.array);
-  free(right.array);
-
-  return merged;
+void swap(int *a, int *b) {
+  int temp = *a;
+  *a = *b;
+  *b = temp;
 }

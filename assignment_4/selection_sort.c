@@ -90,11 +90,16 @@ bool check_sorted(int *array, int length) {
 }
 
 void selection_sort(int *array, int length) {
-  for (int i = 0; i < length; i++) {
-    int candidate = array[i];
-    for (int j = i; j < length ; j++) {
-      candidate = array[j] < candidate ? array[j] : candidate; 
+  for (int i = 0; i < length - 1; i++) {
+    int min_index = i;
+    for (int j = i + 1; j < length; j++) {
+      if (array[j] < array[min_index]) {
+        min_index = j;
+      }
     }
-    array[i] = candidate;
+
+    int temp = array[min_index];
+    array[min_index] = array[i];
+    array[i] = temp;
   }
 }

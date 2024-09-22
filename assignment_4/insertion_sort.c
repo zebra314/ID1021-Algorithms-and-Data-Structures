@@ -89,14 +89,13 @@ bool check_sorted(int *array, int length) {
   return true;
 }
 
-int temp;
 void insertion_sort(int *array, int length) {
   int i, j, key;
   for (i = 1; i < length; i++) {
     key = array[i];
     j = i - 1;
 
-      while (j >= 0 && array[j] > key) {
+    while (j >= 0 && array[j] > key) {
       array[j + 1] = array[j];
       j = j - 1;
     }

@@ -159,20 +159,29 @@ Array merge_sort_v2(Array array) {
 }
 
 void merge_array_v2(Array* array, int* aux, int left, int right) {
+  // If there is only one element in the array, sorted
   if (right <= left) return;
 
   int mid = left + (right - left) / 2;
   merge_array_v2(array, aux, left, mid);
   merge_array_v2(array, aux, mid + 1, right);
 
+  // Copy the current range to the auxiliary array
+  // This prevent us from copying the array multiple times
   for (int k = left; k <= right; k++) {
     aux[k] = array->array[k];
   }
 
+  // Merge Step
   int i = left, j = mid + 1;
   for (int k = left; k <= right; k++) {
+
+    // If the elements from one side have been merged,
+    // copy the remaining elements from the other side
     if (i > mid) array->array[k] = aux[j++];
     else if (j > right) array->array[k] = aux[i++];
+
+    // Compare the elements from the left and right array
     else if (aux[j] < aux[i]) array->array[k] = aux[j++];
     else array->array[k] = aux[i++];
   }

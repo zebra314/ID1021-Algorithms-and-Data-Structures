@@ -7,6 +7,7 @@
 \usepackage{subcaption}
 \usepackage{float}
 \usepackage{amsmath}
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue]{hyperref}
 
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18} 
@@ -26,10 +27,228 @@
 
 \section*{Selection Sort}
 
+From the start of the array, the algorithm searches for the smallest element in 
+the unsorted part of the array(the right side of the current element) and swaps
+it with the current element, then moves to the next element. If there are n elements
+in the array, the algorithm will perform $(n-i)$ comparisons for the $i$th element, 
+and the total number of comparisons is:
+
+\begin{equation}
+  n + (n-1) + (n-2) + \ldots + 1 = \frac{n(n+1)}{2}
+\end{equation}
+
+Therefore, the time complexity of the selection sort is $O(n^2)$.
+The following code snippet shows the implementation of the selection sort algorithm
+and the result of sorting array with different sizes is shown in Figure \ref{fig:selection-sort}.
+
+\begin{minted}{c}
+void selection_sort(int *array, int length) {
+  for (int i = 0; i < length - 1; i++) {
+    int min_index = i;
+    for (int j = i + 1; j < length; j++) {
+      if (array[j] < array[min_index]) {
+        min_index = j;
+      }
+    }
+    int temp = array[min_index];
+    array[min_index] = array[i];
+    array[i] = temp;
+  }
+}
+\end{minted}
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+  \begin{axis}[
+    xlabel={Array Size (per M element)},
+    ylabel={Time (ms)},
+    xmode=log,
+    log basis x=10,
+    ymode=log,
+    log basis y=10,
+    ymajorgrids=true,
+    grid style=dashed,
+    width=12cm, height=6cm,
+    % legend pos=outer north east,
+    scaled y ticks=false,
+    scaled x ticks=false,
+    % y filter/.code={\pgfmathparse{#1/1000}\pgfmathresult},
+    % x filter/.code={\pgfmathparse{#1/1000000}\pgfmathresult},
+    ]
+  \addplot[color=blue,] table {./data/selection_sort.dat};
+  \end{axis}
+
+  \end{tikzpicture}
+  \caption{Selection Sort with different array sizes}
+  \label{fig:selection-sort}
+\end{figure}
+
 \section*{Insertion Sort}
+
+The insertion sort algorithm works by finding the correct position at the left 
+side of the current element. If there are n elements in the array, the algorithm
+will perform $(n-i)$ comparisons for the $i$th element, and the total number of
+comparisons is the same as the selection sort algorithm, which is $\frac{n(n+1)}{2}$.
+Therefore, the time complexity of the insertion sort is also $O(n^2)$.
+
+The following code snippet implements the insertion sort algorithm and the result
+is shown in Figure \ref{fig:insertion-sort}.
+
+\begin{minted}{c}
+void insertion_sort(int *array, int length) {
+  int i, j, key;
+  for (i = 1; i < length; i++) {
+    key = array[i];
+    j = i - 1;
+    while (j >= 0 && array[j] > key) {
+      array[j + 1] = array[j];
+      j = j - 1;
+    }
+    array[j + 1] = key;
+  }
+}
+\end{minted}
+  
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+  \begin{axis}[
+    xlabel={Array Size (per M element)},
+    ylabel={Time (ms)},
+    xmode=log,
+    log basis x=10,
+    ymode=log,
+    log basis y=10,
+    ymajorgrids=true,
+    grid style=dashed,
+    width=12cm, height=6cm,
+    % legend pos=outer north east,
+    scaled y ticks=false,
+    scaled x ticks=false,
+    % y filter/.code={\pgfmathparse{#1/1000}\pgfmathresult},
+    % x filter/.code={\pgfmathparse{#1/1000000}\pgfmathresult},
+    ]
+  \addplot[color=blue,] table {./data/insertion_sort.dat};
+  \end{axis}
+
+  \end{tikzpicture}
+  \caption{Insertion Sort with different array sizes}
+  \label{fig:insertion-sort}
+\end{figure}
+
+Compare to the selection sort, the insertion sort algorithm is more efficient
+when the array is partially sorted. Additionally, the insertion sort is considered
+more stable than the selection sort as it does not change the order of the elements
+that has the right order, while the selection sort does sometimes.
 
 \section*{Merge Sort}
 
+The merge sort alogrithm divides the array into two halves recursively, then merge
+the two halves in a sorted order. For a array with n elements, the algorithm will
+divides the array $\log_2 n$ times, until each subarray has only one element.
+Then, the algorithm will merge the subarrays, which takes $O(n)$ time. Therefore,
+the time complexity of the merge sort is $O(n \log n)$.
+
+The implementation of the merge sort alogrithm is a little too long to show here,
+I uploaded the code to the \href{https://github.com/zebra314/ID1021-Algorithms-and-Data-Structures/blob/main/assignment\_4/merge\_sort.c}{file in github repository}.
+The result of sorting array with different sizes is shown in Figure \ref{fig:merge-sort}.
+We can see that the Time per element($T/n$) is proportional to the size of the array in a log scale($\log_{10}n$),
+which means $T \propto n \log n$.
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+  \begin{axis}[
+    xlabel={Array Size (per M element, log scale)},
+    ylabel={Time per element ($T/n$, ms)},
+    xmode=log,
+    log basis x=10,
+    ymajorgrids=true,
+    grid style=dashed,
+    width=12cm, height=6cm,
+    scaled y ticks=false,
+    scaled x ticks=false,
+    % Customize the tick labels (optional)
+    yticklabel style={/pgf/number format/fixed, /pgf/number format/precision=3},
+    ]
+    
+  % Apply transformation y -> (y/x) * constant (where constant is chosen as 1000)
+  \addplot[color=blue] table[y expr=(\thisrowno{1}/\thisrowno{0})*1000] {./data/merge_sort.dat};
+  
+  \end{axis}
+  \end{tikzpicture}
+  \caption{Merge Sort with different array sizes (normalized as $T/n$)}
+  \label{fig:merge-sort}
+\end{figure}
+  
 \section*{Quick Sort}
+
+The quick sort algorithm start by selecting a pivot element, then partition the array
+into two parts recursively, one with elements less than the pivot and the other with elements greater
+than the pivot. The time complexity of the quick sort is the same as the merge sort, which is $O(n \log n)$.
+
+The code snippet shows the implementation of the quick sort algorithm and the result of sorting
+array with different sizes is shown in Figure \ref{fig:quick-sort}.
+
+\begin{minted}{c}
+void quick_sort(Array *array, int start, int end) {
+  if (start < end) {
+    int pivot = partition(array, start, end);
+    quick_sort(array, start, pivot - 1);
+    quick_sort(array, pivot + 1, end);
+  }
+}
+
+int partition(Array *array, int start, int end) {
+  int pivot = array->array[end];
+  int i = start - 1;
+  for (int j = start; j < end; j++) {
+    if (array->array[j] < pivot) {
+      i++;
+      swap(&array->array[i], &array->array[j]);
+    }
+  }
+  swap(&array->array[i + 1], &array->array[end]);
+  return i + 1;
+}
+\end{minted}
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+  \begin{axis}[
+    xlabel={Array Size (per M element, log scale)},
+    ylabel={Time per element ($T/n$, ms)},
+    xmode=log,
+    log basis x=10,
+    ymajorgrids=true,
+    grid style=dashed,
+    width=12cm, height=6cm,
+    scaled y ticks=false,
+    scaled x ticks=false,
+    % Customize the tick labels (optional)
+    yticklabel style={/pgf/number format/fixed, /pgf/number format/precision=3},
+    ]
+    
+  % Apply transformation y -> (y/x) * constant (where constant is chosen as 1000)
+  \addplot[color=blue] table[y expr=(\thisrowno{1}/\thisrowno{0})*1000] {./data/quick_sort.dat};
+  
+  \end{axis}
+  \end{tikzpicture}
+  \caption{Quick Sort with different array sizes (normalized as $T/n$)}
+  \label{fig:quick-sort}
+\end{figure}
+
+\section*{Optimization of Merge Sort}
+
+After implementing the merge sort algorithm, I found that it copies the array reapeatedly
+when merging the subarrays. By following the suggestion and the resource online, I modified
+the way of merging the subarrays by using the same array($array aux$) to store the sorted elements.
+
+Originally, there are two arrays, right and left, to store the elements of the subarrays, then will
+be merged into another new array. The new implementation uses the same array to store the sorted elements
+and merge the subarrays in the same place.
+
+The code snippet is shown at the same \href{https://github.com/zebra314/ID1021-Algorithms-and-Data-Structures/blob/main/assignment\_4/merge\_sort.c}{file in github repository}.
 
 \end{document}
