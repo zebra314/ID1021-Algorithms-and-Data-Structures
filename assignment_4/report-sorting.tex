@@ -155,6 +155,7 @@ I uploaded the code to the \href{https://github.com/zebra314/ID1021-Algorithms-a
 The result of sorting array with different sizes is shown in Figure \ref{fig:merge-sort}.
 We can see that the Time per element($T/n$) is proportional to the size of the array in a log scale($\log_{10}n$),
 which means $T \propto n \log n$.
+
 \begin{figure}[H]
   \centering
   \begin{tikzpicture}
@@ -249,6 +250,72 @@ Originally, there are two arrays, right and left, to store the elements of the s
 be merged into another new array. The new implementation uses the same array to store the sorted elements
 and merge the subarrays in the same place.
 
-The code snippet is shown at the same \href{https://github.com/zebra314/ID1021-Algorithms-and-Data-Structures/blob/main/assignment\_4/merge\_sort.c}{file in github repository}.
+The code snippet below shows the implementation of the optimized merge sort algorithm and the result
+of sorting array with different sizes is shown in Figure \ref{fig:merge-sort-optimized}.
+
+\begin{minted}{c}
+Array merge_sort_v2(Array array) {
+  int* aux = (int*)malloc(array.length * sizeof(int));
+  merge_array_v2(&array, aux, 0, array.length - 1);
+  free(aux);
+  return array;
+}
+
+void merge_array_v2(Array* array, int* aux, int left, int right) {
+  // If there is only one element in the array, sorted
+  if (right <= left) return;
+
+  int mid = left + (right - left) / 2;
+  merge_array_v2(array, aux, left, mid);
+  merge_array_v2(array, aux, mid + 1, right);
+
+  // Copy the current range to the auxiliary array
+  // This prevent us from copying the array multiple times
+  for (int k = left; k <= right; k++) {
+    aux[k] = array->array[k];
+  }
+
+  // Merge Step
+  int i = left, j = mid + 1;
+  for (int k = left; k <= right; k++) {
+
+    // If the elements from one side have been merged,
+    // copy the remaining elements from the other side
+    if (i > mid) array->array[k] = aux[j++];
+    else if (j > right) array->array[k] = aux[i++];
+
+    // Compare the elements from the left and right array
+    else if (aux[j] < aux[i]) array->array[k] = aux[j++];
+    else array->array[k] = aux[i++];
+  }
+}
+\end{minted}
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+  \begin{axis}[
+    xlabel={Array Size (per M element, log scale)},
+    ylabel={Time per element ($T/n$, ms)},
+    xmode=log,
+    log basis x=10,
+    ymajorgrids=true,
+    grid style=dashed,
+    width=12cm, height=6cm,
+    scaled y ticks=false,
+    scaled x ticks=false,
+    legend pos=outer north east,
+    % Customize the tick labels (optional)
+    yticklabel style={/pgf/number format/fixed, /pgf/number format/precision=3},
+    ]
+  \legend{Merge Sort, Merge Sort Optimized}
+  % Apply transformation y -> (y/x) * constant (where constant is chosen as 1000)
+  \addplot[color=blue] table[y expr=(\thisrowno{1}/\thisrowno{0})*1000] {./data/merge_sort.dat};
+  \addplot[color=red] table[y expr=(\thisrowno{1}/\thisrowno{0})*1000] {./data/merge_sort_opt.dat};
+  \end{axis}
+  \end{tikzpicture}
+  \caption{Two types of Merge Sort (normalized as $T/n$)}
+  \label{fig:merge-sort-optimized}
+\end{figure}
 
 \end{document}

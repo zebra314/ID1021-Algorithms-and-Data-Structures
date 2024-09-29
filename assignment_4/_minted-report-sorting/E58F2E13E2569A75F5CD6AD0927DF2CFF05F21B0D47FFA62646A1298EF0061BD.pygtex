@@ -1,0 +1,37 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{Array}\PYG{+w}{ }\PYG{n+nf}{merge\PYGZus{}sort\PYGZus{}v2}\PYG{p}{(}\PYG{n}{Array}\PYG{+w}{ }\PYG{n}{array}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{k+kt}{int}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{aux}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{(}\PYG{k+kt}{int}\PYG{o}{*}\PYG{p}{)}\PYG{n}{malloc}\PYG{p}{(}\PYG{n}{array}\PYG{p}{.}\PYG{n}{length}\PYG{+w}{ }\PYG{o}{*}\PYG{+w}{ }\PYG{k}{sizeof}\PYG{p}{(}\PYG{k+kt}{int}\PYG{p}{));}
+\PYG{+w}{  }\PYG{n}{merge\PYGZus{}array\PYGZus{}v2}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{array}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{aux}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{array}\PYG{p}{.}\PYG{n}{length}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{);}
+\PYG{+w}{  }\PYG{n}{free}\PYG{p}{(}\PYG{n}{aux}\PYG{p}{);}
+\PYG{+w}{  }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{array}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{merge\PYGZus{}array\PYGZus{}v2}\PYG{p}{(}\PYG{n}{Array}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{array}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{aux}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{left}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{right}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{c+c1}{// If there is only one element in the array, sorted}
+\PYG{+w}{  }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{right}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{left}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{return}\PYG{p}{;}
+
+\PYG{+w}{  }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{mid}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{left}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{right}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{left}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{/}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{p}{;}
+\PYG{+w}{  }\PYG{n}{merge\PYGZus{}array\PYGZus{}v2}\PYG{p}{(}\PYG{n}{array}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{aux}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{left}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{mid}\PYG{p}{);}
+\PYG{+w}{  }\PYG{n}{merge\PYGZus{}array\PYGZus{}v2}\PYG{p}{(}\PYG{n}{array}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{aux}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{mid}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{right}\PYG{p}{);}
+
+\PYG{+w}{  }\PYG{c+c1}{// Copy the current range to the auxiliary array}
+\PYG{+w}{  }\PYG{c+c1}{// This prevent us from copying the array multiple times}
+\PYG{+w}{  }\PYG{k}{for}\PYG{+w}{ }\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{k}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{left}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{k}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{right}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{k}\PYG{o}{++}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{aux}\PYG{p}{[}\PYG{n}{k}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{array}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{array}\PYG{p}{[}\PYG{n}{k}\PYG{p}{];}
+\PYG{+w}{  }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{  }\PYG{c+c1}{// Merge Step}
+\PYG{+w}{  }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{i}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{left}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{j}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{mid}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k}{for}\PYG{+w}{ }\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{k}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{left}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{k}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{right}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{k}\PYG{o}{++}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+
+\PYG{+w}{    }\PYG{c+c1}{// If the elements from one side have been merged,}
+\PYG{+w}{    }\PYG{c+c1}{// copy the remaining elements from the other side}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{i}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n}{mid}\PYG{p}{)}\PYG{+w}{ }\PYG{n}{array}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{array}\PYG{p}{[}\PYG{n}{k}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{aux}\PYG{p}{[}\PYG{n}{j}\PYG{o}{++}\PYG{p}{];}
+\PYG{+w}{    }\PYG{k}{else}\PYG{+w}{ }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{j}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n}{right}\PYG{p}{)}\PYG{+w}{ }\PYG{n}{array}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{array}\PYG{p}{[}\PYG{n}{k}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{aux}\PYG{p}{[}\PYG{n}{i}\PYG{o}{++}\PYG{p}{];}
+
+\PYG{+w}{    }\PYG{c+c1}{// Compare the elements from the left and right array}
+\PYG{+w}{    }\PYG{k}{else}\PYG{+w}{ }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{aux}\PYG{p}{[}\PYG{n}{j}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{aux}\PYG{p}{[}\PYG{n}{i}\PYG{p}{])}\PYG{+w}{ }\PYG{n}{array}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{array}\PYG{p}{[}\PYG{n}{k}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{aux}\PYG{p}{[}\PYG{n}{j}\PYG{o}{++}\PYG{p}{];}
+\PYG{+w}{    }\PYG{k}{else}\PYG{+w}{ }\PYG{n}{array}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{array}\PYG{p}{[}\PYG{n}{k}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{aux}\PYG{p}{[}\PYG{n}{i}\PYG{o}{++}\PYG{p}{];}
+\PYG{+w}{  }\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}
