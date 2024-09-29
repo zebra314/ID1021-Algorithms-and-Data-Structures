@@ -1,0 +1,8 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{linked\PYGZus{}add}\PYG{p}{(}\PYG{n}{linked}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{lnk}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{item}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{n}{cell}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{new}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{cell}\PYG{o}{*}\PYG{p}{)}\PYG{n}{malloc}\PYG{p}{(}\PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{cell}\PYG{p}{));}
+\PYG{+w}{  }\PYG{n}{new}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{value}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{item}\PYG{p}{;}
+\PYG{+w}{  }\PYG{n}{new}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{tail}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{lnk}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{first}\PYG{p}{;}
+\PYG{+w}{  }\PYG{n}{lnk}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{first}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{new}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}
