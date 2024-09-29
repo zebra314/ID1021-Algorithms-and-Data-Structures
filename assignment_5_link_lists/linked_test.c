@@ -32,12 +32,24 @@ void benchmark_1();
 void benchmark_2();
 void array_append(int **a, int *size_a, int *b, int size_b);
 void compare_to_array();
+
+// Stack data structure
+typedef struct stack {
+  linked *list;
+} stack;
+
+// Stack functions
+stack *new_stack();
+void push(stack *stk, int val);
+int pop(stack *stk);
 void implement_stack();
+void free_stack(stack *stk);
 
 int main() {
   // benchmark_1();
   // benchmark_2();
-  compare_to_array();
+  // compare_to_array();
+  implement_stack();
   return 0;
 }
 
@@ -282,5 +294,56 @@ void compare_to_array() {
 }
 
 void implement_stack() {
-  ;
+  stack *stk = new_stack();
+  push(stk, 32);
+  push(stk, 33);
+  push(stk, 34);
+
+  push(stk, 1);
+  push(stk, 2);
+  
+  printf("pop : %d\n", pop(stk));
+  printf("pop : %d\n", pop(stk));
+  printf("pop : %d\n", pop(stk));
+
+  push(stk, 3);
+
+  printf("pop : %d\n", pop(stk));
+  printf("pop : %d\n", pop(stk));
+  printf("pop : %d\n", pop(stk));
+
+  free_stack(stk);
+}
+
+stack *new_stack() {
+  stack *stk = (stack*)malloc(sizeof(stack));
+  stk->list = linked_create();
+  return stk;
+}
+
+void push(stack *stk, int val) {
+  linked_add(stk->list, val);
+}
+
+int pop(stack *stk) {
+  if (stk->list->first == NULL) {
+    printf("Underflow\n");
+    return -1;
+  } else {
+    int val = stk->list->first->value;
+    cell *temp = stk->list->first;
+    stk->list->first = stk->list->first->tail;
+    free(temp);
+    return val;
+  }
+}
+
+void free_stack(stack *stk) {
+  while (stk->list->first != NULL) {
+    cell *temp = stk->list->first;
+    stk->list->first = stk->list->first->tail;
+    free(temp);
+  }
+  free(stk->list);
+  free(stk);
 }
