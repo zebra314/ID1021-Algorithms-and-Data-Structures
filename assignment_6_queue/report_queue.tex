@@ -121,5 +121,61 @@ void enque(queue* q, int v) {
 }
 \end{minted}
 
+To compare the performance of the two methods, I tested the time to add and remove
+elements from the queue with sizes ranging from 10 to 100,000 elements.
+
+First, we compare the time to add elements to the queue, as shown in Figure \ref{fig:queue_add},
+we can see that the optimized implementation is much faster than the previous one.
+The time to add elements with the optimized implementation is almost constant, while
+the time to add elements with the previous implementation increases linearly with the
+number of elements.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      xlabel={Number of elements},
+      ylabel={Time (ns)},
+      legend pos=north west,
+      xmode=log,
+      ymode=log,
+      log ticks with fixed point,
+      xtick={10, 100, 1000, 10000, 100000},
+      ytick={1, 10, 100, 1000, 10000},
+    ]
+    \addplot table {./data/queue_add.dat};
+    \addplot table {./data/queue_v2_add.dat};
+    \legend{Old, New}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Time to add elements from the queue}
+  \label{fig:queue_add}
+\end{figure}
+
+Next, we compare the time to remove elements from the queue, as shown in Figure \ref{fig:queue_remove},
+both implementations have similar performance. The time to remove elements with both implementations
+is constant, which is expected since the time to remove elements from the queue should be $O(1)$.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      xlabel={Number of elements},
+      ylabel={Time (ns)},
+      legend pos=north west,
+      xmode=log,
+      % ymode=log,
+      log ticks with fixed point,
+      xtick={10, 100, 1000, 10000, 100000},
+      % ytick={1, 10, 100, 1000, 10000},
+    ]
+    \addplot table {./data/queue_remove.dat};
+    \addplot table {./data/queue_v2_remove.dat};
+    \legend{Old, New}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Time to remove elements from the queue}
+  \label{fig:queue_remove}
+\end{figure}
 
 \end{document}
