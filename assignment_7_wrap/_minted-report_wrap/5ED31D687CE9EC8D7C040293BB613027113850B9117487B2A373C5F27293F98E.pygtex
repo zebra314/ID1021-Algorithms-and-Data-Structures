@@ -1,0 +1,31 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{enqueue}\PYG{p}{(}\PYG{n}{queue}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{q}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{data}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+
+\PYG{+w}{  }\PYG{c+c1}{// Check if the queue is full}
+\PYG{+w}{  }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{q}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{count}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{n}{q}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{size}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{printf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Overflow, increasing the size of the queue}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{c+c1}{// Create a new queue with double the size}
+\PYG{+w}{    }\PYG{n}{q}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{size}\PYG{+w}{ }\PYG{o}{*=}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k+kt}{int}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{copy}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{(}\PYG{k+kt}{int}\PYG{o}{*}\PYG{p}{)}\PYG{n}{malloc}\PYG{p}{(}\PYG{n}{q}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{size}\PYG{+w}{ }\PYG{o}{*}\PYG{+w}{ }\PYG{k}{sizeof}\PYG{p}{(}\PYG{k+kt}{int}\PYG{p}{));}
+
+\PYG{+w}{    }\PYG{c+c1}{// Copy the elements to the new queue}
+\PYG{+w}{    }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{index}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{for}\PYG{+w}{ }\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{i}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{+w}{ }\PYG{o}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{q}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{count}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{++}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{      }\PYG{n}{index}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{q}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{first}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{n}{i}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{\PYGZpc{}}\PYG{+w}{ }\PYG{n}{q}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{size}\PYG{p}{;}
+\PYG{+w}{      }\PYG{n}{copy}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{q}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{queue}\PYG{p}{[}\PYG{n}{index}\PYG{p}{];}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{c+c1}{// Update the old queue with the new queue}
+\PYG{+w}{    }\PYG{n}{q}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{first}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{q}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{last}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{q}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{count}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{free}\PYG{p}{(}\PYG{n}{q}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{queue}\PYG{p}{);}
+\PYG{+w}{    }\PYG{n}{q}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{queue}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{copy}\PYG{p}{;}
+\PYG{+w}{  }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{  }\PYG{c+c1}{// Add the new element to the last position}
+\PYG{+w}{  }\PYG{n}{q}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{queue}\PYG{p}{[}\PYG{n}{q}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{last}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{data}\PYG{p}{;}
+\PYG{+w}{  }\PYG{n}{q}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{last}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{q}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{last}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{\PYGZpc{}}\PYG{+w}{ }\PYG{n}{q}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{size}\PYG{p}{;}
+\PYG{+w}{  }\PYG{n}{q}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{count}\PYG{o}{++}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}
