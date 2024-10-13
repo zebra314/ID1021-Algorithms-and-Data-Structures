@@ -124,19 +124,16 @@ void add_recursive(node *current, int value) {
 
 void print_pre_ord(node *nd) {
   if (nd != NULL) {
-    printf("%d", nd->value);
+    printf("%d ", nd->value);
     print_pre_ord(nd->left);
     print_pre_ord(nd->right);
-    printf("\n");
   }
 }
 
 void print_in_ord(node *nd) {
   if (nd != NULL) {
     print_in_ord(nd->left);
-    printf("\n");
-    printf("%d", nd->value);
-    printf("\n");
+    printf("%d ", nd->value);
     print_in_ord(nd->right);
   }
 }
@@ -146,7 +143,6 @@ void print_post_ord(node *nd) {
     print_post_ord(nd->left);
     print_post_ord(nd->right);
     printf("%d ", nd->value);
-    printf("\n");
   }
 }
 

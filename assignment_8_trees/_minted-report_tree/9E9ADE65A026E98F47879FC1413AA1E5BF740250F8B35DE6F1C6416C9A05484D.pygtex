@@ -1,0 +1,29 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{stack}\PYG{+w}{ }\PYG{o}{*}\PYG{n+nf}{create\PYGZus{}stack}\PYG{p}{()}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{n}{stack}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{stk}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{stack}\PYG{+w}{ }\PYG{o}{*}\PYG{p}{)}\PYG{n}{malloc}\PYG{p}{(}\PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{stack}\PYG{p}{));}
+\PYG{+w}{  }\PYG{n}{stk}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{top}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n+nb}{NULL}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{stk}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{push}\PYG{p}{(}\PYG{n}{stack}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{stk}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{node}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{tree\PYGZus{}node}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{n}{stack\PYGZus{}node}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{new\PYGZus{}node}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{stack\PYGZus{}node}\PYG{+w}{ }\PYG{o}{*}\PYG{p}{)}\PYG{n}{malloc}\PYG{p}{(}\PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{stack\PYGZus{}node}\PYG{p}{));}
+\PYG{+w}{  }\PYG{n}{new\PYGZus{}node}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{tree\PYGZus{}node}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{tree\PYGZus{}node}\PYG{p}{;}
+\PYG{+w}{  }\PYG{n}{new\PYGZus{}node}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{next}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{stk}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{top}\PYG{p}{;}
+\PYG{+w}{  }\PYG{n}{stk}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{top}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{new\PYGZus{}node}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{n}{node}\PYG{+w}{ }\PYG{o}{*}\PYG{n+nf}{pop}\PYG{p}{(}\PYG{n}{stack}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{stk}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{stk}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{top}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{n+nb}{NULL}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{return}\PYG{+w}{ }\PYG{n+nb}{NULL}\PYG{p}{;}
+\PYG{+w}{  }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{  }\PYG{n}{stack\PYGZus{}node}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{temp}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{stk}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{top}\PYG{p}{;}
+\PYG{+w}{  }\PYG{n}{node}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{res}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{temp}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{tree\PYGZus{}node}\PYG{p}{;}
+\PYG{+w}{  }\PYG{n}{stk}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{top}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{stk}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{top}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{next}\PYG{p}{;}
+\PYG{+w}{  }\PYG{n}{free}\PYG{p}{(}\PYG{n}{temp}\PYG{p}{);}
+\PYG{+w}{  }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{res}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n+nf}{is\PYGZus{}empty}\PYG{p}{(}\PYG{n}{stack}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{stk}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{stk}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{top}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{n+nb}{NULL}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

@@ -25,199 +25,259 @@
 
 \maketitle
 
-```latex
-\documentclass{article}
-\usepackage{amsmath}
-\usepackage{listings}
-\usepackage{hyperref}
-\usepackage{graphicx}
+\subsection*{Binary Tree}
 
-\title{\textbf{Trees in C}}
-\author{Ying Pei Lin}
-\date{Fall 2024}
+Down below is the code to implement a binary tree in C.
 
-\begin{document}
+First, we build the structure of the binary tree. The tree is 
+constructed by nodes, each node has a left and right child. At the 
+beginning, the root node is set to NULL, which means the tree is empty.
+When creating a new node, the left and right child are also set to NULL.
 
-\maketitle
-
-\section{Binary Tree Implementation}
-
-\subsection{Data Structure}
-A binary tree node in C is typically defined as follows:
-
-\begin{lstlisting}[language=C]
-typedef struct node {
-    int value;
-    struct node *right;
-    struct node *left;
-} node;
-
-typedef struct tree {
-    node *root;
-} tree;
-\end{lstlisting}
-
-Each node contains an integer value and pointers to its left and right children. The tree structure holds a pointer to the root node.
-
-\subsection{Tree and Node Construction}
-To create and manage trees, we implement the following functions:
-
-\begin{lstlisting}[language=C]
-tree *construct_tree() {
-    tree *tr = (tree*)malloc(sizeof(tree));
-    tr->root = NULL;
-    return tr;
+\begin{minted}{c}
+tree *construct_tree() { 
+  tree *tr = (tree*)malloc(sizeof(tree));
+  tr->root = NULL;
+  return tr;
 }
 
 node *construct_node(int val) {
-    node *nd = (node*)malloc(sizeof(node));
-    nd->value = val;
-    nd->left = NULL;
-    nd->right = NULL;
-    return nd;
+  node *nd = (node*)malloc(sizeof(node));
+  nd->value =val;
+  nd->left = NULL;
+  nd->right = NULL;
+  return nd;
 }
-\end{lstlisting}
+\end{minted}
 
-\subsection{Memory Management}
-Proper memory management is crucial. We use these functions to free allocated memory:
+To insert a new value to the tree, we first check if the tree is empty.
+If the tree is empty, we create a new node and set it as the root node.
+If the tree is not empty, we traverse the tree from the root node to the
+leaf node. If the value is already in the tree, we do nothing. If the value
+is less than the current node, we go to the left child. If the value is greater
+than the current node, we go to the right child. If the left or right child is
+NULL, we create a new node and set it as the left or right child.
 
-\begin{lstlisting}[language=C]
-void free_tree(tree *tr) {
-    if (tr != NULL) {
-        free_node(tr->root);
-        free(tr);
-    }
-}
-
-void free_node(node *nd) {
-    if (nd != NULL) {
-        free_node(nd->left);
-        free_node(nd->right);
-        free(nd);
-    }
-}
-\end{lstlisting}
-
-\section{Adding Elements}
-We implement two versions of the add operation: iterative and recursive.
-
-\subsection{Iterative Add}
-The iterative version navigates the tree without recursion:
-
-\begin{lstlisting}[language=C]
+\begin{minted}{c}
 void add(tree *tr, int value) {
-    if (tr->root == NULL) {
-        tr->root = construct_node(value);
+  // The tree is empty
+  if(tr->root == NULL) {
+    tr->root = construct_node(value);
+    return;
+  }
+
+  node *current = tr->root;
+  while (true) {
+
+    // The value is already in the tree
+    if(current->value == value) {
+      return;
+    }
+
+    // The value is less than the current code
+    // Go to the left
+    else if (value < current->value) {
+      if (current->left == NULL) {
+        current->left = construct_node(value);
         return;
+      } else {
+        current = current->left;
+      }
     }
-
-    node *current = tr->root;
-    while (true) {
-        if (current->value == value) {
-            return;
-        } else if (value < current->value) {
-            if (current->left == NULL) {
-                current->left = construct_node(value);
-                return;
-            } else {
-                current = current->left;
-            }
-        } else {
-            if (current->right == NULL) {
-                current->right = construct_node(value);
-                return;
-            } else {
-                current = current->right;
-            }
-        }
-    }
-}
-\end{lstlisting}
-
-\subsection{Recursive Add}
-The recursive version:
-
-\begin{lstlisting}[language=C]
-void add_recursive(node *current, int value) {
-    if (current == NULL) {
-        current = construct_node(value);
-    } else if (current->value == value) {
+    
+    // The value is greater than the current code
+    // Go to the right
+    else {
+      if (current->right == NULL) {
+        current->right = construct_node(value);
         return;
-    } else if (value < current->value) {
-        add_recursive(current->left, value);
-    } else if (value > current->value) {
-        add_recursive(current->right, value);
+      } else {
+        current = current->right;
+      }
     }
+  }
 }
-\end{lstlisting}
+\end{minted}
 
-\section{Searching}
-The lookup operation searches for a value in the tree:
+Originally, my loop structure was like this, which is incorrect.
 
-\begin{lstlisting}[language=C]
+\begin{minted}{c}
+while (true) {
+
+  // The value is already in the tree
+  if(current->value == value) {
+    return;
+  }
+
+  // Reach the leaf node
+  else if(current == NULL) {
+    current = construct_node(value);
+    return;
+  }
+
+  // The value is less than the current code
+  else if (value < current->value) {
+    current = current->left;
+  }
+
+  // The value is greater than the current code
+  else {
+    current = current->right;
+  }
+}
+\end{minted}
+
+After spending a lot of time debugging, I realized that the problem was
+that \texttt{current == NULL} doesn't work, because if the pointer is NULL,
+then it is not going to create the node at the right place. So we should create
+the new node immediately after we find the NULL child. 
+
+To search for a value in the tree, we traverse the tree from the root node
+
+\begin{minted}{c}
 bool lookup(tree *tr, int value) {
-    node *current = tr->root;
-    while (current != NULL) {
-        if (current->value == value) {
-            return true;
-        } else if (value < current->value) {
-            current = current->left;
-        } else {
-            current = current->right;
-        }
+  node *current = tr->root;
+  while (current != NULL) {
+
+    // Found the value
+    if (current->value == value) {
+      return true;
+    } 
+    
+    // The value is less than the current code
+    // Go to the left
+    else if (value < current->value) {
+      current = current->left;
+    } 
+    
+    // The value is greater than the current code
+    // Go to the right
+    else {
+      current = current->right;
     }
-    return false;
+  }
+  return false;
 }
-\end{lstlisting}
+\end{minted}
 
-\section{Depth-First Traversal}
-There are three main types of depth-first traversal for binary trees:
+\subsection*{Depth first traversal}
 
-\subsection{In-Order Traversal}
-Visits the left subtree, then the root, then the right subtree:
+Depth first traversal is a way to traverse the tree by going as far as possible, 
+we discover into the deepest node before backtracking. There are three types of
+depth first traversal: pre-order, in-order, and post-order. Down below is the code
+to implement these three types of depth first traversal.
 
-\begin{lstlisting}[language=C]
-void print_in_ord(node *nd) {
-    if (nd != NULL) {
-        print_in_ord(nd->left);
-        printf("%d\n", nd->value);
-        print_in_ord(nd->right);
-    }
-}
-\end{lstlisting}
-
-\subsection{Pre-Order Traversal}
-Visits the root, then the left subtree, then the right subtree:
-
-\begin{lstlisting}[language=C]
+\begin{minted}{c}
 void print_pre_ord(node *nd) {
-    if (nd != NULL) {
-        printf("%d\n", nd->value);
-        print_pre_ord(nd->left);
-        print_pre_ord(nd->right);
-    }
+  if (nd != NULL) {
+    printf("%d ", nd->value);
+    print_pre_ord(nd->left);
+    print_pre_ord(nd->right);
+  }
 }
-\end{lstlisting}
 
-\subsection{Post-Order Traversal}
-Visits the left subtree, then the right subtree, then the root:
+void print_in_ord(node *nd) {
+  if (nd != NULL) {
+    print_in_ord(nd->left);
+    printf("%d ", nd->value);
+    print_in_ord(nd->right);
+  }
+}
 
-\begin{lstlisting}[language=C]
 void print_post_ord(node *nd) {
-    if (nd != NULL) {
-        print_post_ord(nd->left);
-        print_post_ord(nd->right);
-        printf("%d\n", nd->value);
-    }
+  if (nd != NULL) {
+    print_post_ord(nd->left);
+    print_post_ord(nd->right);
+    printf("%d ", nd->value);
+  }
 }
-\end{lstlisting}
 
-\section{Performance Considerations}
-The performance of binary tree operations depends on the tree's structure. In a balanced tree, operations like add and lookup have a time complexity of O(log n), where n is the number of nodes. However, if the tree becomes unbalanced (e.g., when adding elements in sorted order), the performance can degrade to O(n), similar to a linked list.
+void print_tree(tree *tr) {
+  if (tr->root != NULL) {
+    print_in_ord(tr->root);
+    // print_pre_ord(tr->root);
+    // print_post_ord(tr->root);
+  }
+}
+\end{minted}
 
-To maintain optimal performance, more advanced tree structures like AVL trees or Red-Black trees can be used, which automatically balance themselves during insertions and deletions.
+\subsection*{Explicit stack}
 
-\section{Conclusion}
-Binary trees are fundamental data structures in computer science, offering efficient storage and retrieval of ordered data. This implementation in C demonstrates basic operations and traversal methods. Understanding these concepts is crucial for developing more complex tree-based data structures and algorithms.
+To use a explicit stack to implement the in-order traversal, we first 
+create a stack structure, which is implemented by a linked list. The following
+code shows how to create a stack, push, pop elements from the stack, and check
+whether the stack is empty.
+
+\begin{minted}{c}
+stack *create_stack() {
+  stack *stk = (stack *)malloc(sizeof(stack));
+  stk->top = NULL;
+  return stk;
+}
+
+void push(stack *stk, node *tree_node) {
+  stack_node *new_node = (stack_node *)malloc(sizeof(stack_node));
+  new_node->tree_node = tree_node;
+  new_node->next = stk->top;
+  stk->top = new_node;
+}
+
+node *pop(stack *stk) {
+  if (stk->top == NULL) {
+    return NULL;
+  }
+  stack_node *temp = stk->top;
+  node *res = temp->tree_node;
+  stk->top = stk->top->next;
+  free(temp);
+  return res;
+}
+
+int is_empty(stack *stk) {
+  return stk->top == NULL;
+}
+\end{minted}
+
+Then we can use the stack to implement the in-order traversal. The following
+code shows how to use the stack to print the tree in order. 
+
+After entering the 
+while loop, we first check if the current node is NULL and the stack is empty,
+if so, this means we have traversed all the nodes in the tree, the task is done.
+If the current node is not NULL, we push all the left nodes to the stack. 
+
+After, 
+we pop the top node from the stack, print the value of the node, and move to the
+right child of the node.
+
+\begin{minted}{c}
+void print_in_order(tree *tr) {
+  stack *stk = create_stack();
+  node *cur = tr->root;
+
+  while (1) {
+
+    // If the current node is NULL and the stack is empty
+    if (cur == NULL && is_empty(stk)) {
+      break;
+    }         
+    
+    // Push all left nodes to the stack
+    while (cur != NULL) {
+      push(stk, cur);
+      cur = cur->left;
+    }
+
+    // Pop the top node from the stack
+    cur = pop(stk);
+    printf("%d ", cur->value);
+
+    // Move to the right child
+    cur = cur->right;
+  }
+
+  free(stk);
+}
+\end{minted}
 
 \end{document}
