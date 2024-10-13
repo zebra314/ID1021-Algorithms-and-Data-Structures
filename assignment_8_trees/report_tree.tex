@@ -25,10 +25,199 @@
 
 \maketitle
 
-\section*{Binary tree}
+```latex
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{graphicx}
 
-\section*{Depth first traversal}
+\title{\textbf{Trees in C}}
+\author{Ying Pei Lin}
+\date{Fall 2024}
 
-\section*{Explicit stack}
+\begin{document}
+
+\maketitle
+
+\section{Binary Tree Implementation}
+
+\subsection{Data Structure}
+A binary tree node in C is typically defined as follows:
+
+\begin{lstlisting}[language=C]
+typedef struct node {
+    int value;
+    struct node *right;
+    struct node *left;
+} node;
+
+typedef struct tree {
+    node *root;
+} tree;
+\end{lstlisting}
+
+Each node contains an integer value and pointers to its left and right children. The tree structure holds a pointer to the root node.
+
+\subsection{Tree and Node Construction}
+To create and manage trees, we implement the following functions:
+
+\begin{lstlisting}[language=C]
+tree *construct_tree() {
+    tree *tr = (tree*)malloc(sizeof(tree));
+    tr->root = NULL;
+    return tr;
+}
+
+node *construct_node(int val) {
+    node *nd = (node*)malloc(sizeof(node));
+    nd->value = val;
+    nd->left = NULL;
+    nd->right = NULL;
+    return nd;
+}
+\end{lstlisting}
+
+\subsection{Memory Management}
+Proper memory management is crucial. We use these functions to free allocated memory:
+
+\begin{lstlisting}[language=C]
+void free_tree(tree *tr) {
+    if (tr != NULL) {
+        free_node(tr->root);
+        free(tr);
+    }
+}
+
+void free_node(node *nd) {
+    if (nd != NULL) {
+        free_node(nd->left);
+        free_node(nd->right);
+        free(nd);
+    }
+}
+\end{lstlisting}
+
+\section{Adding Elements}
+We implement two versions of the add operation: iterative and recursive.
+
+\subsection{Iterative Add}
+The iterative version navigates the tree without recursion:
+
+\begin{lstlisting}[language=C]
+void add(tree *tr, int value) {
+    if (tr->root == NULL) {
+        tr->root = construct_node(value);
+        return;
+    }
+
+    node *current = tr->root;
+    while (true) {
+        if (current->value == value) {
+            return;
+        } else if (value < current->value) {
+            if (current->left == NULL) {
+                current->left = construct_node(value);
+                return;
+            } else {
+                current = current->left;
+            }
+        } else {
+            if (current->right == NULL) {
+                current->right = construct_node(value);
+                return;
+            } else {
+                current = current->right;
+            }
+        }
+    }
+}
+\end{lstlisting}
+
+\subsection{Recursive Add}
+The recursive version:
+
+\begin{lstlisting}[language=C]
+void add_recursive(node *current, int value) {
+    if (current == NULL) {
+        current = construct_node(value);
+    } else if (current->value == value) {
+        return;
+    } else if (value < current->value) {
+        add_recursive(current->left, value);
+    } else if (value > current->value) {
+        add_recursive(current->right, value);
+    }
+}
+\end{lstlisting}
+
+\section{Searching}
+The lookup operation searches for a value in the tree:
+
+\begin{lstlisting}[language=C]
+bool lookup(tree *tr, int value) {
+    node *current = tr->root;
+    while (current != NULL) {
+        if (current->value == value) {
+            return true;
+        } else if (value < current->value) {
+            current = current->left;
+        } else {
+            current = current->right;
+        }
+    }
+    return false;
+}
+\end{lstlisting}
+
+\section{Depth-First Traversal}
+There are three main types of depth-first traversal for binary trees:
+
+\subsection{In-Order Traversal}
+Visits the left subtree, then the root, then the right subtree:
+
+\begin{lstlisting}[language=C]
+void print_in_ord(node *nd) {
+    if (nd != NULL) {
+        print_in_ord(nd->left);
+        printf("%d\n", nd->value);
+        print_in_ord(nd->right);
+    }
+}
+\end{lstlisting}
+
+\subsection{Pre-Order Traversal}
+Visits the root, then the left subtree, then the right subtree:
+
+\begin{lstlisting}[language=C]
+void print_pre_ord(node *nd) {
+    if (nd != NULL) {
+        printf("%d\n", nd->value);
+        print_pre_ord(nd->left);
+        print_pre_ord(nd->right);
+    }
+}
+\end{lstlisting}
+
+\subsection{Post-Order Traversal}
+Visits the left subtree, then the right subtree, then the root:
+
+\begin{lstlisting}[language=C]
+void print_post_ord(node *nd) {
+    if (nd != NULL) {
+        print_post_ord(nd->left);
+        print_post_ord(nd->right);
+        printf("%d\n", nd->value);
+    }
+}
+\end{lstlisting}
+
+\section{Performance Considerations}
+The performance of binary tree operations depends on the tree's structure. In a balanced tree, operations like add and lookup have a time complexity of O(log n), where n is the number of nodes. However, if the tree becomes unbalanced (e.g., when adding elements in sorted order), the performance can degrade to O(n), similar to a linked list.
+
+To maintain optimal performance, more advanced tree structures like AVL trees or Red-Black trees can be used, which automatically balance themselves during insertions and deletions.
+
+\section{Conclusion}
+Binary trees are fundamental data structures in computer science, offering efficient storage and retrieval of ordered data. This implementation in C demonstrates basic operations and traversal methods. Understanding these concepts is crucial for developing more complex tree-based data structures and algorithms.
 
 \end{document}
