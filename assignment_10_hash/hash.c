@@ -44,7 +44,6 @@ codes *read_postcodes(char *file) {
   return postnr;
 }
 
-
 void collisions(codes *postnr, int mod) {
   int mx = 20;
   int data[mod];
@@ -111,4 +110,85 @@ area* binary_search(codes *postnr, const char *zip) {
 long nano_seconds(struct timespec *t_start, struct timespec *t_stop) {
   return (t_stop->tv_nsec - t_start->tv_nsec) +
          (t_stop->tv_sec - t_start->tv_sec) * 1000000000;
+}
+
+// new zip function
+codes* new_zip(codes *postnr) {
+  for(int i = 0; i<postnr->n; i++) {
+    char *zip = postnr->areas[i].zip;
+    postnr->areas[i].zip = atoi(zip)*100 + atoi(zip+3);
+  }
+  return postnr;
+}
+
+// Benchmark searches for "111 15" and "984 99"
+void test1(codes *postnr) {
+  area *a;
+
+  clock_gettime(CLOCK_REALTIME, &t_start);
+  for(int i = 0; i < 1000; i++) {
+    a = linear_search(postnr, "111 15");
+  }
+  clock_gettime(CLOCK_REALTIME, &t_stop);
+  printf("Linear search: %ld ns\n", nano_seconds(&t_start, &t_stop)/1000);
+
+  clock_gettime(CLOCK_REALTIME, &t_start);
+  for(int i = 0; i < 1000; i++) {
+    a = binary_search(postnr, "111 15");
+  }
+  clock_gettime(CLOCK_REALTIME, &t_stop);
+  printf("Binary search: %ld ns\n", nano_seconds(&t_start, &t_stop)/1000);
+
+  clock_gettime(CLOCK_REALTIME, &t_start);
+  for(int i = 0; i < 1000; i++) {
+    a = linear_search(postnr, "984 99");
+  }
+  clock_gettime(CLOCK_REALTIME, &t_stop);
+  printf("Linear search: %ld ns\n", nano_seconds(&t_start, &t_stop)/1000);
+
+  clock_gettime(CLOCK_REALTIME, &t_start);
+  for(int i = 0; i < 1000; i++) {
+    a = binary_search(postnr, "984 99");
+  }
+  clock_gettime(CLOCK_REALTIME, &t_stop);
+  printf("Binary search: %ld ns\n", nano_seconds(&t_start, &t_stop)/1000);
+
+  // Clean up
+  for (int i = 0; i < postnr->n; i++) {
+    free(postnr->areas[i].name);
+    free(postnr->areas[i].zip);
+  }
+  free(postnr->areas);
+  free(postnr);
+
+  return 0;
+}
+
+// Benchmark searches for "111 15" and "984 99"
+// with new zip function
+void test2(codes *postnr) {
+  postnr = new_zip(postnr);
+
+  area *a;
+
+  clock_gettime(CLOCK_REALTIME, &t_start);
+  a = linear_search(postnr, "111 15");
+  clock_gettime(CLOCK_REALTIME, &t_stop);
+  printf("Linear search: %ld ns\n", nano_seconds(&t_start, &t_stop));
+
+  clock_gettime(CLOCK_REALTIME, &t_start);
+  a = binary_search(postnr, "111 15");
+  clock_gettime(CLOCK_REALTIME, &t_stop);
+  printf("Binary search: %ld ns\n", nano_seconds(&t_start, &t_stop));
+
+  clock_gettime(CLOCK_REALTIME, &t_start);
+  a = linear_search(postnr, "984 99");
+  clock_gettime(CLOCK_REALTIME, &t_stop);
+  printf("Linear search: %ld ns\n", nano_seconds(&t_start, &t_stop));
+
+  clock_gettime(CLOCK_REALTIME, &t_start);
+  a = binary_search(postnr, "984 99");
+  clock_gettime(CLOCK_REALTIME, &t_stop);
+  printf("Binary search: %ld ns\n", nano_seconds(&t_start, &t_stop));
+
 }

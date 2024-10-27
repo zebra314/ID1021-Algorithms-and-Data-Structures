@@ -27,6 +27,9 @@ area* linear_search(codes *postnr, const char *zip);
 
 // Hash
 codes *read_postcodes(char *file);
+codes* new_zip(codes *postnr);
 void collisions(codes *postnr, int mod);
+void test1(codes *postnr);
+void test2(codes *postnr);
 
 #endif // HASH_H
