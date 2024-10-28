@@ -171,6 +171,19 @@ area* direct_lookup(codes *postnr, int zip) {
   return NULL;
 }
 
+// Lookup function in hash table with buckets
+area* hash_lookup(codes *postnr, int zip) {
+  int index = hash(zip, postnr->size);
+  bucket *b = postnr->buckets[index];
+  
+  for(int i = 0; i < b->size; i++) {
+    if(b->areas[i].zip_int == zip) {
+      return &b->areas[i];
+    }
+  }
+  return NULL;
+}
+
 /* -------------------------------------------------------------------------- */
 /*                               Tool functions                               */
 /* -------------------------------------------------------------------------- */
@@ -405,7 +418,7 @@ void test3(codes *postnr) {
 
 // Implement the hash table method using zip codes as keys and using buckets
 void test4(codes *postnr) {
-  postnr = init_hash_table(postnr, 10000);
+  postnr = init_hash_table(postnr, 14000);
   count_collisions(postnr);
 
   // Clean up

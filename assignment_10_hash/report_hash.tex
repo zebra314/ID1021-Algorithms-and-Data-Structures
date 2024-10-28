@@ -8,6 +8,7 @@
 \usepackage{float}
 \usepackage{amsmath}
 \usepackage{array}
+\usepackage{multirow}
 \usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue]{hyperref}
 
 \usepackage{pgfplots}
@@ -150,6 +151,102 @@ The direct indexing method is faster because it uses the zip code as an index to
   \caption{Comparison the Search Times for Integer Data Type ZIP Codes in Direct lookup and Binary Searches}
   \label{table:direct_times}
 \end{table}
+
+\subsection*{Collisions}
+
+The direct indexing method is efficient when there are no collisions. However, when there are collisions,
+it will overwrite the previous element in the array. To handle collisions, we can use a linked list to store the elements with the same index.
+Here, I use a array of pointers to the {\tt node} struct to store the elements with the same index.
+The method is called bucket hashing.
+
+I modified the {\tt codes} struct to include the {\tt buckets} array 
+of pointers to the {\tt node} struct. The modified {\tt codes} struct is as follows:
+
+\begin{minted}{c}
+typedef struct bucket {
+  area *areas;        // Dynamic array of areas
+  int size;           // Current size of bucket
+  int capacity;       // Capacity of bucket
+} bucket;
+
+typedef struct codes {
+  bucket **buckets;    // Array of pointers to buckets
+  int n;               // Number of areas
+  int size;            // Size of hash table
+} codes;
+\end{minted}
+
+To insert the elements into the hash table, I use the {\tt hash} function to convert the zip code to an integer
+and use it as the index to the array. No matter if the collision happens or not, the element will be added to the bucket.
+If the bucket is full, I resize the bucket by doubling the capacity.
+
+\begin{minted}{c}
+int hash(int zip, int table_size) {
+  return zip % table_size;
+}
+
+void insert_bucket(codes *postnr, area *a) {
+  int index = hash(a->zip_int, postnr->size);
+  
+  // If bucket doesn't exist, create it
+  if(postnr->buckets[index] == NULL) {
+    postnr->buckets[index] = malloc(sizeof(bucket));
+    postnr->buckets[index]->capacity = 1;
+    postnr->buckets[index]->size = 0;
+    postnr->buckets[index]->areas = malloc(sizeof(area));
+  }
+  
+  // If bucket is full, resize it
+  bucket *b = postnr->buckets[index];
+  if(b->size >= b->capacity) {
+    b->capacity *= 2;
+    b->areas = realloc(b->areas, b->capacity * sizeof(area));
+  }
+  
+  // Add the area
+  b->areas[b->size] = *a;
+  b->size++;
+}
+\end{minted}
+
+The search function is similar to the direct indexing method, 
+but it has to iterate through the bucket to find the element.
+
+\begin{minted}{c}
+area* hash_lookup(codes *postnr, int zip) {
+  int index = hash(zip, postnr->size);
+  bucket *b = postnr->buckets[index];
+  
+  for(int i = 0; i < b->size; i++) {
+    if(b->areas[i].zip_int == zip) {
+      return &b->areas[i];
+    }
+  }
+  return NULL;
+}
+\end{minted}
+
+The efficiency of the bucket hashing method depends on the size of the hash table and the number of collisions.
+If the hash table is too small, there will be many collisions, and the search time will increase.
+If the hash table is too large, there will be many empty buckets, and the memory usage will increase.
+Comparing the amount of collisions between different size of hash table, the Table \ref{table:collisions} shows 
+the number of collisions for different size of hash table(measured using the modified {\tt collisions} function).
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|c|c|c|c|c|c|c|}
+    \hline
+    \multirow{2}{*}{\textbf{Size of Hash Table}} & \multicolumn{6}{c|}{\textbf{Numbers of Collision}} \\ 
+    \cline{2-7} & \textbf{0} & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{4} & \textbf{5} \\ \hline
+    13513 & 5410 & 1678 & 287 & 12 & 0 & 0 \\ \hline
+    13600 & 3406 & 1578 & 613 & 229 & 56 & 13 \\ \hline
+    14000 & 3055 & 1316 & 615 & 320 & 134 & 31 \\ \hline
+  \end{tabular}
+  \caption{Comparison of the Number of Collisions for Different Sizes of Hash Table}
+  \label{table:collisions}
+\end{table}
+
+\subsection*{}
 
 
 \end{document}
