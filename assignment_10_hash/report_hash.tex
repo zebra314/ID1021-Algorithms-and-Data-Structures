@@ -49,12 +49,12 @@ area* binary_search_char(codes *postnr, const char *zip) {
   
   while (left <= right) {
     int mid = (left + right) / 2;
-    int cmp = strcmp(postnr->areas[mid].zip_char, zip);
+    int comparison_result = strcmp(postnr->areas[mid].zip_char, zip);
     
-    if (cmp == 0) {
+    if (comparison_result == 0) {
       return &postnr->areas[mid];
     }
-    if (cmp < 0) {
+    if (comparison_result < 0) {
       left = mid + 1;
     } else {
       right = mid - 1;
@@ -181,8 +181,8 @@ and use it as the index to the array. No matter if the collision happens or not,
 If the bucket is full, I resize the bucket by doubling the capacity.
 
 \begin{minted}{c}
-int hash(int zip, int table_size) {
-  return zip % table_size;
+int hash(int zip, int size) {
+  return zip % size;
 }
 
 void insert_bucket(codes *postnr, area *a) {
@@ -197,10 +197,10 @@ void insert_bucket(codes *postnr, area *a) {
   }
   
   // If bucket is full, resize it
-  bucket *b = postnr->buckets[index];
-  if(b->size >= b->capacity) {
-    b->capacity *= 2;
-    b->areas = realloc(b->areas, b->capacity * sizeof(area));
+  bucket *bucket = postnr->buckets[index];
+  if(bucket->size >= bucket->capacity) {
+    bucket->capacity *= 2;
+    bucket->areas = realloc(bucket->areas, bucket->capacity * sizeof(area));
   }
   
   // Add the area
@@ -215,11 +215,11 @@ but it has to iterate through the bucket to find the element.
 \begin{minted}{c}
 area* hash_lookup(codes *postnr, int zip) {
   int index = hash(zip, postnr->size);
-  bucket *b = postnr->buckets[index];
+  bucket *bucket = postnr->buckets[index];
   
-  for(int i = 0; i < b->size; i++) {
-    if(b->areas[i].zip_int == zip) {
-      return &b->areas[i];
+  for(int i = 0; i < bucket->size; i++) {
+    if(bucket->areas[i].zip_int == zip) {
+      return &bucket->areas[i];
     }
   }
   return NULL;
@@ -295,21 +295,21 @@ codes *init_linear_hash(codes *postnr, int size) {
 The search function is similar to the bucket hashing method, but it has to iterate through the array to find the element.
 First, we calculate the index using the hash function. Then we start from the index and move to the next slot until we find the element.
 To prevent infinite loops, we check if the number of probes is greater than the size of the hash table.
-If it is, we return {\tt NULL}.
+If it is, we will return {\tt NULL}.
 
 \begin{minted}{c}
 area* lookup_linear(codes *postnr, int zip) {
-  linear_hash *lh = postnr->linear;
+  linear_hash *linear = postnr->linear;
   int probes = 0;
-  int index = hash(zip, lh->size);
+  int index = hash(zip, linear->size);
   
-  while(lh->areas[index].zip_int != 0) {
-    if(lh->areas[index].zip_int == zip) {
-      return &lh->areas[index];
+  while(linear->areas[index].zip_int != 0) {
+    if(linear->areas[index].zip_int == zip) {
+      return &linear->areas[index];
     }
-    index = (index + 1) % lh->size;
+    index = (index + 1) % linear->size;
     probes++;
-    if(probes >= lh->size) return NULL;
+    if(probes >= linear->size) return NULL;
   }
   
   return NULL;

@@ -1,6 +1,6 @@
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n+nf}{hash}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{zip}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{table\PYGZus{}size}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
-\PYG{+w}{  }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{zip}\PYG{+w}{ }\PYG{o}{\PYGZpc{}}\PYG{+w}{ }\PYG{n}{table\PYGZus{}size}\PYG{p}{;}
+\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n+nf}{hash}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{zip}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{size}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{zip}\PYG{+w}{ }\PYG{o}{\PYGZpc{}}\PYG{+w}{ }\PYG{n}{size}\PYG{p}{;}
 \PYG{p}{\PYGZcb{}}
 
 \PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{insert\PYGZus{}bucket}\PYG{p}{(}\PYG{n}{codes}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{postnr}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{area}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{a}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
@@ -15,10 +15,10 @@
 \PYG{+w}{  }\PYG{p}{\PYGZcb{}}
 
 \PYG{+w}{  }\PYG{c+c1}{// If bucket is full, resize it}
-\PYG{+w}{  }\PYG{n}{bucket}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{b}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{postnr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{buckets}\PYG{p}{[}\PYG{n}{index}\PYG{p}{];}
-\PYG{+w}{  }\PYG{k}{if}\PYG{p}{(}\PYG{n}{b}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{size}\PYG{+w}{ }\PYG{o}{\PYGZgt{}=}\PYG{+w}{ }\PYG{n}{b}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{capacity}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
-\PYG{+w}{    }\PYG{n}{b}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{capacity}\PYG{+w}{ }\PYG{o}{*=}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{p}{;}
-\PYG{+w}{    }\PYG{n}{b}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{areas}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{realloc}\PYG{p}{(}\PYG{n}{b}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{areas}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{b}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{capacity}\PYG{+w}{ }\PYG{o}{*}\PYG{+w}{ }\PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{area}\PYG{p}{));}
+\PYG{+w}{  }\PYG{n}{bucket}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{bucket}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{postnr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{buckets}\PYG{p}{[}\PYG{n}{index}\PYG{p}{];}
+\PYG{+w}{  }\PYG{k}{if}\PYG{p}{(}\PYG{n}{bucket}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{size}\PYG{+w}{ }\PYG{o}{\PYGZgt{}=}\PYG{+w}{ }\PYG{n}{bucket}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{capacity}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{bucket}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{capacity}\PYG{+w}{ }\PYG{o}{*=}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{bucket}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{areas}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{realloc}\PYG{p}{(}\PYG{n}{bucket}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{areas}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{bucket}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{capacity}\PYG{+w}{ }\PYG{o}{*}\PYG{+w}{ }\PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{area}\PYG{p}{));}
 \PYG{+w}{  }\PYG{p}{\PYGZcb{}}
 
 \PYG{+w}{  }\PYG{c+c1}{// Add the area}
