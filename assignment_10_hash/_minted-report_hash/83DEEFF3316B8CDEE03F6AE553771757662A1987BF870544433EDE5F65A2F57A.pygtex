@@ -1,0 +1,10 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{codes}\PYG{+w}{ }\PYG{o}{*}\PYG{n+nf}{init\PYGZus{}direct}\PYG{p}{(}\PYG{n}{codes}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{postnr}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{n}{postnr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{areas\PYGZus{}direct}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{area}\PYG{o}{**}\PYG{p}{)}\PYG{n}{malloc}\PYG{p}{(}\PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{area}\PYG{o}{*}\PYG{p}{)}\PYG{o}{*}\PYG{l+m+mi}{100000}\PYG{p}{);}
+\PYG{+w}{  }\PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{i}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{+w}{ }\PYG{o}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{postnr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{n}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{++}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{zip}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{zip\PYGZus{}to\PYGZus{}int}\PYG{p}{(}\PYG{n}{postnr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{areas}\PYG{p}{[}\PYG{n}{i}\PYG{p}{].}\PYG{n}{zip\PYGZus{}char}\PYG{p}{);}
+\PYG{+w}{    }\PYG{n}{postnr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{areas\PYGZus{}direct}\PYG{p}{[}\PYG{n}{zip}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n}{postnr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{areas}\PYG{p}{[}\PYG{n}{i}\PYG{p}{];}
+\PYG{+w}{  }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{  }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{postnr}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

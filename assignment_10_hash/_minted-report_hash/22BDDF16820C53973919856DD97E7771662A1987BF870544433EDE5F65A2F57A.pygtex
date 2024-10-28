@@ -1,0 +1,7 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{typedef}\PYG{+w}{ }\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{codes}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{n}{area}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{areas}\PYG{p}{;}
+\PYG{+w}{  }\PYG{n}{area}\PYG{+w}{ }\PYG{o}{**}\PYG{n}{areas\PYGZus{}direct}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{// Array of pointers to areas}
+\PYG{+w}{  }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{n}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{n}{codes}\PYG{p}{;}
+\end{Verbatim}

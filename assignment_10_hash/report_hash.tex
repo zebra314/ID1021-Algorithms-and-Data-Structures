@@ -105,4 +105,51 @@ Additionally, the data type does affect the search time. The integer data type i
 
 \subsection*{Direct Indexing}
 
+The direct indexing method is a way to improve the search time by using the zip code as an index to the array.
+To achieve this, I add a new {\tt areas\_direct} array is an array of pointers to the {\tt area} struct
+and use the zip code as the index to the array.
+The modified {\tt codes} struct is as follows:
+
+\begin{minted}{c}
+typedef struct codes {
+  area *areas;
+  area **areas_direct; // Array of pointers to areas
+  int n;
+} codes;
+\end{minted}
+
+To initialize the direct indexing, I create a new function {\tt init\_direct}
+to convert the zip code to an integer and use it as the index to the array after store the post codes
+using the original {\tt read\_postcodes} function.
+
+\begin{minted}{c}
+codes *init_direct(codes *postnr) {
+  postnr->areas_direct = (area**)malloc(sizeof(area*)*100000);
+  for(int i = 0; i < postnr->n; i++) {
+    int zip = zip_to_int(postnr->areas[i].zip_char);
+    postnr->areas_direct[zip] = &postnr->areas[i];
+  }
+  return postnr;
+}
+\end{minted}
+
+Comparing the search time for the direct indexing method with the binary search methods,
+the direct indexing method is faster than the binary search method as shown in Table \ref{table:direct_times}.
+The direct indexing method is faster because it uses the zip code as an index to the array, which is a constant time operation.
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|c|c|c|}
+    \hline
+    \textbf{ZIP Code} & \textbf{Search Type} & \textbf{Time (ns)} \\ \hline
+    111 15 & Direct lookup & 0 ns \\ \hline
+    111 15 & Binary Search & 18 ns \\ \hline
+    984 99 & Direct lookup & 0 ns \\ \hline
+    984 99 & Binary Search & 20 ns \\ \hline
+  \end{tabular}
+  \caption{Comparison the Search Times for Integer Data Type ZIP Codes in Direct lookup and Binary Searches}
+  \label{table:direct_times}
+\end{table}
+
+
 \end{document}

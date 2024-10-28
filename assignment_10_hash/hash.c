@@ -4,6 +4,10 @@
 #define AREAS 10000
 struct timespec t_start, t_stop;
 
+/* -------------------------------------------------------------------------- */
+/*                                Init function                               */
+/* -------------------------------------------------------------------------- */
+
 codes *read_postcodes(char *file) {
 
   // Allocate memory for the struct
@@ -34,6 +38,7 @@ codes *read_postcodes(char *file) {
 
     // Allocate memory for each field and copy contents
     a.zip_char = strdup(zip_token);   // Allocate and copy zip
+    a.zip_int = zip_to_int(a.zip_char);
     a.name = strdup(name_token); // Allocate and copy name
     a.pop = atoi(pop_token);     // Convert pop to integer
 
@@ -48,36 +53,48 @@ codes *read_postcodes(char *file) {
   return postnr;
 }
 
-void collisions(codes *postnr, int mod) {
-  int mx = 20;
-  int data[mod];
-  int cols[mx];
-
-  for(int i = 0; i < mod; i++) {
-    data[i] = 0;
+codes *init_direct(codes *postnr) {
+  postnr->areas_direct = (area**)malloc(sizeof(area*)*100000);
+  for(int i = 0; i < postnr->n; i++) {
+    int zip = zip_to_int(postnr->areas[i].zip_char);
+    postnr->areas_direct[zip] = &postnr->areas[i];
   }
+  return postnr;
+}
 
-  for(int i = 0; i < mx; i++) {
-    cols[i] = 0;
+// Initialize a hash table with a given size
+// using bucket to handle collisions
+codes* init_hash_table(codes *postnr, int size) {
+  postnr->buckets = (bucket**)malloc(sizeof(bucket*)*size);
+  postnr->size = size;
+  for(int i = 0; i < postnr->n; i++) {
+    insert_bucket(postnr, &postnr->areas[i]);
   }
+  return postnr;
+}
 
-  for (int i = 0; i < postnr->n; i++) {
-    int index = atoi(postnr->areas[i].zip_char)%mod;
-    data[index]++;
+// Insert into bucket
+void insert_bucket(codes *postnr, area *a) {
+  int index = hash(a->zip_int, postnr->size);
+  
+  // If bucket doesn't exist, create it
+  if(postnr->buckets[index] == NULL) {
+    postnr->buckets[index] = malloc(sizeof(bucket));
+    postnr->buckets[index]->capacity = 1;
+    postnr->buckets[index]->size = 0;
+    postnr->buckets[index]->areas = malloc(sizeof(area));
   }
-
-  int sum = 0;
-  for(int i = 0; i < mod; i++) {
-    sum += data[i];
-    if (data[i] < mx)
-      cols[data[i]]++;
+  
+  // If bucket is full, resize it
+  bucket *b = postnr->buckets[index];
+  if(b->size >= b->capacity) {
+    b->capacity *= 2;
+    b->areas = realloc(b->areas, b->capacity * sizeof(area));
   }
-
-  printf("%d (%d) : ", mod, sum);
-  for (int i = 1; i < mx; i++) {
-    printf("%6d ",cols[i]);
-  }
-  printf("\n");
+  
+  // Add the area
+  b->areas[b->size] = *a;
+  b->size++;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -146,19 +163,73 @@ area* binary_search_int(codes *postnr, int zip) {
   return NULL;
 }
 
+// Lookup function
+area* direct_lookup(codes *postnr, int zip) {
+  if(zip >= 0 && zip <= 100000) {
+    return postnr->areas_direct[zip];
+  }
+  return NULL;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                               Tool functions                               */
+/* -------------------------------------------------------------------------- */
+
 long nano_seconds(struct timespec *t_start, struct timespec *t_stop) {
   return (t_stop->tv_nsec - t_start->tv_nsec) +
          (t_stop->tv_sec - t_start->tv_sec) * 1000000000;
 }
 
-// Zip function
-// Transform char zip to int zip
+// Zip function, transform char zip to int zip
 codes* new_zip(codes *postnr) {
   for(int i = 0; i<postnr->n; i++) {
     char *zip = postnr->areas[i].zip_char;
     postnr->areas[i].zip_int = atoi(zip)*100 + atoi(zip+3);
   }
   return postnr;
+}
+
+// Convert string zip code to integer (e.g., "111 15" -> 11115)
+int zip_to_int(const char *zip) {
+  int num = 0;
+  for(int i = 0; zip[i] != '\0'; i++) {
+    if(zip[i] >= '0' && zip[i] <= '9') {
+      num = num * 10 + (zip[i] - '0');
+    }
+  }
+  return num;
+}
+
+// Count collisions as provided in the assignment
+void count_collisions(codes *postnr) {
+  int mx = 20;
+  int *cols = calloc(mx, sizeof(int));
+  
+  // Count elements in each bucket
+  for(int i = 0; i < postnr->size; i++) {
+    if(postnr->buckets[i] != NULL) {
+      int count = postnr->buckets[i]->size;
+      if(count < mx) {
+        cols[count]++;
+      }
+    } else {
+      cols[0]++;
+    }
+  }
+  
+  // Print results
+  printf("Collisions:\n");
+  for(int i = 1; i < mx; i++) {
+    printf("%6d ", cols[i]);
+  }
+  printf("\n");
+
+  free(cols);
+}
+
+// Hash function
+int hash(int zip, int table_size) {
+  return zip % table_size;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -264,6 +335,78 @@ void test2(codes *postnr) {
   }
   clock_gettime(CLOCK_REALTIME, &t_stop);
   printf("Binary search: %ld ns\n", nano_seconds(&t_start, &t_stop)/1000);
+
+  // Clean up
+  for (int i = 0; i < postnr->n; i++) {
+    free(postnr->areas[i].name);
+    free(postnr->areas[i].zip_char);
+  }
+  free(postnr->areas);
+  free(postnr);
+}
+
+// Implement the direct indexing method using zip codes as array indices
+// Compare the performance of direct indexing with binary search
+// for the zip codes "111 15" and "984 99"
+void test3(codes *postnr) {
+  postnr = new_zip(postnr);
+  postnr = init_direct(postnr);
+
+  area *a;
+
+  clock_gettime(CLOCK_REALTIME, &t_start);
+  for(int i = 0; i < 1000; i++) {
+    a = direct_lookup(postnr, 11115);
+    if (a == NULL) {
+      fprintf(stderr, "Not found\n");
+    }
+  }
+  clock_gettime(CLOCK_REALTIME, &t_stop);
+  printf("Direct lookup: %ld ns\n", nano_seconds(&t_start, &t_stop)/1000);
+
+  clock_gettime(CLOCK_REALTIME, &t_start);
+  for(int i = 0; i < 1000; i++) {
+    a = binary_search_int(postnr, 11115);
+    if (a == NULL) {
+      fprintf(stderr, "Not found\n");
+    }
+  }
+  clock_gettime(CLOCK_REALTIME, &t_stop);
+  printf("Binary search: %ld ns\n", nano_seconds(&t_start, &t_stop)/1000);
+
+  clock_gettime(CLOCK_REALTIME, &t_start);
+  for(int i = 0; i < 1000; i++) {
+    a = direct_lookup(postnr, 98499);
+    if (a == NULL) {
+      fprintf(stderr, "Not found\n");
+    }
+  }
+  clock_gettime(CLOCK_REALTIME, &t_stop);
+  printf("Direct lookup: %ld ns\n", nano_seconds(&t_start, &t_stop)/1000);
+
+  clock_gettime(CLOCK_REALTIME, &t_start);
+  for(int i = 0; i < 1000; i++) {
+    a = binary_search_int(postnr, 98499);
+    if (a == NULL) {
+      fprintf(stderr, "Not found\n");
+    }
+  }
+  clock_gettime(CLOCK_REALTIME, &t_stop);
+  printf("Binary search: %ld ns\n", nano_seconds(&t_start, &t_stop)/1000);
+
+  // Clean up
+  for (int i = 0; i < postnr->n; i++) {
+    free(postnr->areas[i].name);
+    free(postnr->areas[i].zip_char);
+  }
+  free(postnr->areas);
+  free(postnr);
+}
+
+// Implement the hash table method using zip codes as keys and using buckets
+void test4(codes *postnr) {
+  postnr = init_hash_table(postnr, 10000);
+  count_collisions(postnr);
 
   // Clean up
   for (int i = 0; i < postnr->n; i++) {
