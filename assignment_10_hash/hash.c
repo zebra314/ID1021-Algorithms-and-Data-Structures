@@ -97,6 +97,26 @@ void insert_bucket(codes *postnr, area *a) {
   b->size++;
 }
 
+// Initialize linear probing hash table
+codes *init_linear_hash(codes *postnr, int size) {
+  postnr->linear = malloc(sizeof(linear_hash));
+  postnr->linear->areas = calloc(size * 2, sizeof(area));  // Double size for better performance
+  postnr->linear->size = size * 2;
+  postnr->linear->count = 0;
+
+  // Insert areas
+  for(int i = 0; i < postnr->n; i++) {
+    area a = postnr->areas[i];
+    int index = hash(a.zip_int, postnr->linear->size);
+    while(postnr->linear->areas[index].zip_int != 0) {
+      index = (index + 1) % postnr->linear->size;
+    }
+    postnr->linear->areas[index] = a;
+    postnr->linear->count++;
+  }
+  return postnr;
+}
+
 /* -------------------------------------------------------------------------- */
 /*                              Search functions                              */
 /* -------------------------------------------------------------------------- */
@@ -181,6 +201,25 @@ area* hash_lookup(codes *postnr, int zip) {
       return &b->areas[i];
     }
   }
+  return NULL;
+}
+
+// Lookup with linear probing
+area* lookup_linear(codes *postnr, int zip) {
+  linear_hash *lh = postnr->linear;
+  int probes = 0;
+  int index = hash(zip, lh->size);
+  
+  while(lh->areas[index].zip_int != 0) {
+    if(lh->areas[index].zip_int == zip) {
+      printf("%d\n", probes);
+      return &lh->areas[index];
+    }
+    index = (index + 1) % lh->size;
+    probes++;
+    if(probes >= lh->size) return NULL;
+  }
+  
   return NULL;
 }
 
@@ -420,6 +459,32 @@ void test3(codes *postnr) {
 void test4(codes *postnr) {
   postnr = init_hash_table(postnr, 14000);
   count_collisions(postnr);
+
+  // Clean up
+  for (int i = 0; i < postnr->n; i++) {
+    free(postnr->areas[i].name);
+    free(postnr->areas[i].zip_char);
+  }
+  free(postnr->areas);
+  free(postnr);
+}
+
+// Implement the hash table method using zip codes as keys and using linear probing
+void test5(codes *postnr) {
+  postnr = new_zip(postnr);
+  postnr = init_linear_hash(postnr, 14000);
+
+  area *a;
+
+  clock_gettime(CLOCK_REALTIME, &t_start);
+
+  a = lookup_linear(postnr, 11115);
+  if (a == NULL) {
+    fprintf(stderr, "Not found\n");
+  }
+
+  clock_gettime(CLOCK_REALTIME, &t_stop);
+  printf("Linear probing: %ld ns\n", nano_seconds(&t_start, &t_stop)/1000);
 
   // Clean up
   for (int i = 0; i < postnr->n; i++) {

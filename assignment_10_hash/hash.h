@@ -20,10 +20,17 @@ typedef struct bucket {
   int capacity;       // Capacity of bucket
 } bucket;
 
+typedef struct linear_hash {
+  area *areas;     // Array twice the size needed
+  int size;        // Size of hash table
+  int count;       // Number of elements stored
+} linear_hash;
+
 typedef struct codes {
   area *areas;
   area **areas_direct; // Array of pointers to areas
   bucket **buckets;    // Array of pointers to buckets
+  linear_hash *linear; // Linear probing hash table
   int n;               // Number of areas
   int size;            // Size of hash table
 } codes;
@@ -31,8 +38,9 @@ typedef struct codes {
 // Init
 codes *read_postcodes(char *file);
 codes *init_direct(codes *postnr);
-codes* init_hash_table(codes *postnr, int size);
+codes *init_hash_table(codes *postnr, int size);
 void insert_bucket(codes *postnr, area *a);
+codes *init_linear_hash(codes *postnr, int size);
 
 // Search
 area* linear_search_char(codes *postnr, const char *zip);
@@ -53,5 +61,6 @@ void test1(codes *postnr);
 void test2(codes *postnr);
 void test3(codes *postnr);
 void test4(codes *postnr);
+void test5(codes *postnr);
 
 #endif // HASH_H

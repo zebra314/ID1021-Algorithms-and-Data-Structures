@@ -20,7 +20,7 @@
 \begin{document}
 
 \title{
-  \textbf{Trees in C}
+  \textbf{Hash tables in C}
 }
 \author{Ying Pei Lin}
 \date{Fall 2024}
@@ -246,7 +246,73 @@ the number of collisions for different size of hash table(measured using the mod
   \label{table:collisions}
 \end{table}
 
-\subsection*{}
+\subsection*{Linear Probing}
 
+Another method to handle collisions is linear probing. In linear probing, if there is a collision,
+the element is added to the next available slot in the array.
+The modified {\tt codes} struct is as follows:
 
+\begin{minted}{c}
+typedef struct linear_hash {
+  area *areas;     // Array twice the size needed
+  int size;        // Size of hash table
+  int count;       // Number of elements stored
+} linear_hash;
+
+typedef struct codes {
+  area *areas;
+  linear_hash *linear; // Linear probing hash table
+  int n;               // Number of areas
+  int size;            // Size of hash table
+} codes;
+\end{minted}
+
+To insert the elements into the hash table, I use the {\tt hash} function to convert the zip code to an integer.
+If the slot is occupied, we move to the next slot until we find an empty slot to insert the element.
+The {\tt init\_linear\_hash} function is as follows:
+
+\begin{minted}{c}
+codes *init_linear_hash(codes *postnr, int size) {
+  postnr->linear = malloc(sizeof(linear_hash));
+  postnr->linear->areas = calloc(size * 2, sizeof(area));  // Double size for better performance
+  postnr->linear->size = size * 2;
+  postnr->linear->count = 0;
+
+  // Insert areas
+  for(int i = 0; i < postnr->n; i++) {
+    area a = postnr->areas[i];
+    int index = hash(a.zip_int, postnr->linear->size);
+    while(postnr->linear->areas[index].zip_int != 0) {
+      index = (index + 1) % postnr->linear->size;
+    }
+    postnr->linear->areas[index] = a;
+    postnr->linear->count++;
+  }
+  return postnr;
+}
+\end{minted}
+
+The search function is similar to the bucket hashing method, but it has to iterate through the array to find the element.
+First, we calculate the index using the hash function. Then we start from the index and move to the next slot until we find the element.
+To prevent infinite loops, we check if the number of probes is greater than the size of the hash table.
+If it is, we return {\tt NULL}.
+
+\begin{minted}{c}
+area* lookup_linear(codes *postnr, int zip) {
+  linear_hash *lh = postnr->linear;
+  int probes = 0;
+  int index = hash(zip, lh->size);
+  
+  while(lh->areas[index].zip_int != 0) {
+    if(lh->areas[index].zip_int == zip) {
+      return &lh->areas[index];
+    }
+    index = (index + 1) % lh->size;
+    probes++;
+    if(probes >= lh->size) return NULL;
+  }
+  
+  return NULL;
+}
+\end{minted}
 \end{document}

@@ -1,0 +1,14 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{typedef}\PYG{+w}{ }\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{linear\PYGZus{}hash}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{n}{area}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{areas}\PYG{p}{;}\PYG{+w}{     }\PYG{c+c1}{// Array twice the size needed}
+\PYG{+w}{  }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{size}\PYG{p}{;}\PYG{+w}{        }\PYG{c+c1}{// Size of hash table}
+\PYG{+w}{  }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{count}\PYG{p}{;}\PYG{+w}{       }\PYG{c+c1}{// Number of elements stored}
+\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{n}{linear\PYGZus{}hash}\PYG{p}{;}
+
+\PYG{k}{typedef}\PYG{+w}{ }\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{codes}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{n}{area}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{areas}\PYG{p}{;}
+\PYG{+w}{  }\PYG{n}{linear\PYGZus{}hash}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{linear}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{// Linear probing hash table}
+\PYG{+w}{  }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{n}\PYG{p}{;}\PYG{+w}{               }\PYG{c+c1}{// Number of areas}
+\PYG{+w}{  }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{size}\PYG{p}{;}\PYG{+w}{            }\PYG{c+c1}{// Size of hash table}
+\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{n}{codes}\PYG{p}{;}
+\end{Verbatim}

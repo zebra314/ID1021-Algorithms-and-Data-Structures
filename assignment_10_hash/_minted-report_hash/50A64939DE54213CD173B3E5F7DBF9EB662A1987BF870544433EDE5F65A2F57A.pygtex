@@ -1,0 +1,20 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{codes}\PYG{+w}{ }\PYG{o}{*}\PYG{n+nf}{init\PYGZus{}linear\PYGZus{}hash}\PYG{p}{(}\PYG{n}{codes}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{postnr}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{size}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{n}{postnr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{linear}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{malloc}\PYG{p}{(}\PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{linear\PYGZus{}hash}\PYG{p}{));}
+\PYG{+w}{  }\PYG{n}{postnr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{linear}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{areas}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{calloc}\PYG{p}{(}\PYG{n}{size}\PYG{+w}{ }\PYG{o}{*}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{p}{,}\PYG{+w}{ }\PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{area}\PYG{p}{));}\PYG{+w}{  }\PYG{c+c1}{// Double size for better performance}
+\PYG{+w}{  }\PYG{n}{postnr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{linear}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{size}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{size}\PYG{+w}{ }\PYG{o}{*}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{p}{;}
+\PYG{+w}{  }\PYG{n}{postnr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{linear}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{count}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}
+
+\PYG{+w}{  }\PYG{c+c1}{// Insert areas}
+\PYG{+w}{  }\PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{i}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{+w}{ }\PYG{o}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{postnr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{n}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{++}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{area}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{postnr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{areas}\PYG{p}{[}\PYG{n}{i}\PYG{p}{];}
+\PYG{+w}{    }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{index}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{hash}\PYG{p}{(}\PYG{n}{a}\PYG{p}{.}\PYG{n}{zip\PYGZus{}int}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{postnr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{linear}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{size}\PYG{p}{);}
+\PYG{+w}{    }\PYG{k}{while}\PYG{p}{(}\PYG{n}{postnr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{linear}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{areas}\PYG{p}{[}\PYG{n}{index}\PYG{p}{].}\PYG{n}{zip\PYGZus{}int}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{      }\PYG{n}{index}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{index}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{\PYGZpc{}}\PYG{+w}{ }\PYG{n}{postnr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{linear}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{size}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{n}{postnr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{linear}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{areas}\PYG{p}{[}\PYG{n}{index}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{a}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{postnr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{linear}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{count}\PYG{o}{++}\PYG{p}{;}
+\PYG{+w}{  }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{  }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{postnr}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

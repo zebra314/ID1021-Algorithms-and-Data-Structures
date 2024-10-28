@@ -7,5 +7,6 @@ int main() {
   // test2(postnr);
   // test3(postnr);
   // test4(postnr);
+  test5(postnr);
   return 0;
 }
