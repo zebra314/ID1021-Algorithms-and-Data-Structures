@@ -9,7 +9,8 @@
 
 typedef struct area {
   char *name;
-  char *zip;
+  char *zip_char;
+  int zip_int;
   int pop;
 } area;
 
@@ -19,11 +20,14 @@ typedef struct codes {
 } codes;
 
 // Benchmark
-struct timespec t_start, t_stop;
 long nano_seconds(struct timespec *t_start, struct timespec *t_stop);
 
 // Search
-area* linear_search(codes *postnr, const char *zip);
+area* linear_search_char(codes *postnr, const char *zip);
+area* binary_search_char(codes *postnr, const char *zip);
+area* linear_search_int(codes *postnr, int zip);
+area* binary_search_int(codes *postnr, int zip);
+
 
 // Hash
 codes *read_postcodes(char *file);
