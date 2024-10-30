@@ -109,31 +109,16 @@ algorithm.
 \subsection*{Depth-first search}
 
 One way to find the shortest path between two cities is to use the depth-first search algorithm.
-To record the path, I create a struct called {\tt path} to store the cities and the time to travel between
-the cities. The struct is defined as follows.
-
-\begin{minted}{c}
-typedef struct path {
-  city *cities;  // Array of cities
-  int *times;    // Array of times
-  int n;         // Number of cities
-} path;
-\end{minted}
-
-The depth-first search algorithm is implemented in the {\tt shortest(city *from, city *to, int left, path *path)}.
+The depth-first search algorithm is implemented in the {\tt shortest(city *from, city *to, int left)}.
 The function will recursively call itself to find the destination city. If the destination city is reached,
 it will return 0. If the destination city is not reached, it will iterate through all the connections of the
 current city and recursively call the function with the time left to travel. If we find a path that is shorter
-than the previous path, we will update the path.
+than the previous path, we will update the time.
 
 \begin{minted}{c}
-int shortest(city *from, city *to, int left, path *path) {
+int shortest(city *from, city *to, int left) {
   // Reached destination
   if (from == to) {
-    path->n = 0;
-    path->cities[path->n] = *from;
-    path->times[path->n] = 0;
-    path->n++;
     return 0;
   }
 
@@ -150,24 +135,15 @@ int shortest(city *from, city *to, int left, path *path) {
 
       // Recursively call the function
       // check children
-      int d = shortest(c->dst, to, left, path);
+      int d = shortest(c->dst, to, left);
 
       // If the destination is reached or the time is less than the previous time
-      // update the path
+      // update the time
       if (d >= 0 && ((sofar == -1) || (d + c->time) < sofar)) {
         sofar = (d + c->time);
-        path->cities[path->n] = *from;
-        path->times[path->n] = c->time;
-        update = 1;
       }
     }
   }
-
-  // After check all connections, if the path is updated, 
-  // increase the number of cities
-  if (update)
-    path->n++;
-
   return sofar;
 }
 \end{minted}
@@ -175,7 +151,7 @@ int shortest(city *from, city *to, int left, path *path) {
 \subsection*{Some benchmarks}
 
 Table \ref{table:result_and_times} shows the results of the shortest path between two cities and the computation time.
-Table \ref{table:result_with_paths} shows the results of the shortest path between two cities with the travel times.
+% Table \ref{table:result_with_paths} shows the results of the shortest path between two cities with the travel times.
 
 \begin{center}
   \begin{longtable}{|l|l|>{\centering\arraybackslash}m{2.5cm}|>{\centering\arraybackslash}m{2.5cm}|}
@@ -210,56 +186,132 @@ Table \ref{table:result_with_paths} shows the results of the shortest path betwe
     \hline
     Umeå & Göteborg & 728 & 143000 \\
     \hline
-    Göteborg & Umeå & 330 & 6.8 \\
+    Göteborg & Umeå & 705 & 2750000000000 \\
     \hline
   \end{longtable}
 \end{center}
 
+While doing the benchmarks, I found that the left value will affect the result and the computation time.
+If it is too small, the function will not be able to find the destination city. If it
+is not big enough, the function will not be able to find the shortest path. If it is too big, the function
+will take a long time to compute. This is why the result of the time from Göteborg to Umeå is 705 minutes,
+which is different from the result of the time from Umeå to Göteborg, which is 728 minutes. The left value
+should be handled carefully to get the correct result.
+
+% \begin{center}
+%   \begin{longtable}{|m{2.5cm}|m{2.5cm}|>{\arraybackslash}m{5cm}|>{\centering\arraybackslash}m{2.5cm}|}
+%     \caption{Shortest Path Results with Travel Times} \label{table:result_with_paths} \\
+%     \hline
+%     \textbf{Start} & \textbf{Destination} & \textbf{Path (with travel times)} & \textbf{Total Time (min)} \\
+%     \hline
+%     \endfirsthead
+%     \hline
+%     \textbf{Start} & \textbf{Destination} & \textbf{Path (with travel times)} & \textbf{Total Time (min)} \\
+%     \hline
+%     \endhead
+%     \hline
+%     \multicolumn{4}{|l|}{\textit{Continued on next page}} \\
+%     \hline
+%     \endfoot
+%     \hline
+%     \endlastfoot
+%     Malmö & Göteborg & Malmö $\rightarrow$ Lund (13) $\rightarrow$ Åstorp (36) $\rightarrow$ Halmstad (36) $\rightarrow$ Varberg (29) $\rightarrow$ Göteborg (39) & 153 \\
+%     \hline
+%     Göteborg & Stockholm & Göteborg $\rightarrow$ Herrljunga (39) $\rightarrow$ Falköping (15) $\rightarrow$ Skövde (16) $\rightarrow$ Hallsberg (42) $\rightarrow$ Katrineholm (31) $\rightarrow$ Södertälje (47) $\rightarrow$ Stockholm (21) & 211 \\
+%     \hline
+%     Malmö & Stockholm & Malmö $\rightarrow$ Lund (13) $\rightarrow$ Hässleholm (30) $\rightarrow$ Alvesta (38) $\rightarrow$ Nässjö (33) $\rightarrow$ Mjölby (39) $\rightarrow$ Linköping (16) $\rightarrow$ Norrköping (24) $\rightarrow$ Södertälje (59) $\rightarrow$ Stockholm (21) & 273 \\
+%     \hline
+%     Stockholm & Sundsvall & Stockholm $\rightarrow$ Uppsala (51) $\rightarrow$ Gävle (59) $\rightarrow$ Sundsvall (217) & 327 \\
+%     \hline
+%     Stockholm & Umeå & Stockholm $\rightarrow$ Uppsala (51) $\rightarrow$ Gävle (59) $\rightarrow$ Sundsvall (217) $\rightarrow$ Umeå (190) & 517 \\
+%     \hline
+%     Göteborg & Sundsvall & Göteborg $\rightarrow$ Örebro (140) $\rightarrow$ Sundsvall (140) & 280 \\
+%     \hline
+%     Sundsvall & Umeå & Sundsvall $\rightarrow$ Härnösand (35) $\rightarrow$ Umeå (160) & 195 \\
+%     \hline
+%     Umeå & Göteborg & Umeå $\rightarrow$ Sundsvall (160) $\rightarrow$ Göteborg (180) & 340 \\
+%     \hline
+%     Göteborg & Umeå & Göteborg $\rightarrow$ Örebro (140) $\rightarrow$ Umeå (190) & 330 \\
+%     \hline
+%   \end{longtable}
+% \end{center}
+
+\section*{Improvements}
+
+The current implementation of the depth-first search algorithm is not efficient because 
+it will visit the same city multiple times, also it won't be able to find the shortest path if the left
+value is not big enough. To improve the algorithm, we can use an array to store the cities that have been visited
+and we can skip the city if it has been visited. By doing this, we can also solve the problem of the left value
+because we can stop the function if the destination city has been visited. Below is the code snippet of the
+improved depth-first search algorithm.
+
+\begin{minted}{c}
+int shortest_path(city *from, city *to, city **path, int k) {
+  if (from == to) return 0;
+  int sofar = -1;
+  for(int i = 0; i < from->n; i++) {
+    connection *nxt = &from->recent_connections[i];
+    if (!loop(path, k, nxt->dst)) {
+      path[k] = nxt->dst;
+      int d = shortest_path(nxt->dst, to, path, k+1);
+      if (d >= 0 && ((sofar == -1 ) || (d + nxt->time) < sofar)) {
+        sofar = (d + nxt->time);
+      }
+    }
+  }
+  return sofar;
+}
+
+int loop(city **path, int k, city *dst) {
+  for (int i = 0; i < k; i++) {
+    if (path[i] == dst) {
+      return 1;  // City found in path, loop detected
+    }
+  }
+  return 0;  // No loop detected
+}
+\end{minted}
+
+And the results of the improved depth-first search algorithm are shown in Table \ref{table:result_and_times_improved}.
+We can see that although the computation time is longer than the previous implementation in some early cases,
+the computation time is much shorter in the harder cases.
+
 \begin{center}
-  \begin{longtable}{|m{2.5cm}|m{2.5cm}|>{\arraybackslash}m{5cm}|>{\centering\arraybackslash}m{2.5cm}|}
-    \caption{Shortest Path Results with Travel Times} \label{table:result_with_paths} \\
+  \begin{longtable}{|l|l|>{\centering\arraybackslash}m{2.5cm}|>{\centering\arraybackslash}m{2.5cm}|}
+    \caption{Shortest Path Results and Computation Time} \label{table:result_and_times_improved} \\
     \hline
-    \textbf{Start} & \textbf{Destination} & \textbf{Path (with travel times)} & \textbf{Total Time (min)} \\
+    \textbf{Start} & \textbf{Destination} & \textbf{Total Time (min)} & \textbf{Computation Time (ms)} \\
     \hline
     \endfirsthead
     \hline
-    \textbf{Start} & \textbf{Destination} & \textbf{Path (with travel times)} & \textbf{Total Time (min)} \\
+    \textbf{Start} & \textbf{Destination} & \textbf{Total Time (min)} & \textbf{Computation Time (ms)} \\
     \hline
     \endhead
     \hline
-    \multicolumn{4}{|l|}{\textit{Continued on next page}} \\
+    \multicolumn{4}{|r|}{\textit{Continued on next page}} \\
     \hline
     \endfoot
     \hline
     \endlastfoot
-    Malmö & Göteborg & Malmö $\rightarrow$ Lund (13) $\rightarrow$ Åstorp (36) $\rightarrow$ Halmstad (36) $\rightarrow$ Varberg (29) $\rightarrow$ Göteborg (39) & 153 \\
+    Malmö & Göteborg & 153 & 149800 \\
     \hline
-    Göteborg & Stockholm & Göteborg $\rightarrow$ Herrljunga (39) $\rightarrow$ Falköping (15) $\rightarrow$ Skövde (16) $\rightarrow$ Hallsberg (42) $\rightarrow$ Katrineholm (31) $\rightarrow$ Södertälje (47) $\rightarrow$ Stockholm (21) & 211 \\
+    Göteborg & Stockholm & 211 & 386000 \\
     \hline
-    Malmö & Stockholm & Malmö $\rightarrow$ Lund (13) $\rightarrow$ Helsingborg (30) $\rightarrow$ Lund (35) $\rightarrow$ Hässleholm (30) $\rightarrow$ Alvesta (38) $\rightarrow$ Nässjö (33) $\rightarrow$ Mjölby (39) $\rightarrow$ Linköping (16) $\rightarrow$ Norrköping (24) $\rightarrow$ Södertälje (59) $\rightarrow$ Stockholm (21) & 273 \\
+    Malmö & Stockholm & 273 & 140000 \\
     \hline
-    Stockholm & Sundsvall & Stockholm $\rightarrow$ Uppsala (35) $\rightarrow$ Sundsvall (120) & 155 \\
+    Stockholm & Sundsvall & 327 & 377000 \\
     \hline
-    Stockholm & Umeå & Stockholm $\rightarrow$ Gävle (60) $\rightarrow$ Umeå (210) & 270 \\
+    Stockholm & Umeå & 517 & 528000 \\
     \hline
-    Göteborg & Sundsvall & Göteborg $\rightarrow$ Örebro (140) $\rightarrow$ Sundsvall (140) & 280 \\
+    Göteborg & Sundsvall & 515 & 666000 \\
     \hline
-    Sundsvall & Umeå & Sundsvall $\rightarrow$ Härnösand (35) $\rightarrow$ Umeå (160) & 195 \\
+    Sundsvall & Umeå & 190 & 527000 \\
     \hline
-    Umeå & Göteborg & Umeå $\rightarrow$ Sundsvall (160) $\rightarrow$ Göteborg (180) & 340 \\
+    Umeå & Göteborg & 705 & 234000 \\
     \hline
-    Göteborg & Umeå & Göteborg $\rightarrow$ Örebro (140) $\rightarrow$ Umeå (190) & 330 \\
+    Göteborg & Umeå & 705 & 968000 \\
     \hline
   \end{longtable}
 \end{center}
-\section*{Improvements}
-
-Until I entered this section, I realized that I could use the path to avoid the repeated cities in the path.
-Referring to the code provided in the assignment, I abondoned the original path struct and use the city struct
-array to store the path. Below is the new code snippet for the depth-first search algorithm.
-
-\begin{minted}{c}
-
-\end{minted}
 
 \end{document}

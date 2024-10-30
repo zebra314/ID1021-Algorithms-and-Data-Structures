@@ -180,19 +180,31 @@ int shortest(city *from, city *to, int left, path *path) {
 }
 
 int shortest_path(city *from, city *to, city **path, int k) {
-  // if (from == to) {
-  //   return 0;
-  // }
-  // int sofar = -1;
-  // connection *nxt = from->connections;
-  // while(nxt != NULL) {
-  //   if (!loop(path, k, nxt->dst)) {
-  //     int d = shortest_path(nxt->dst, to, path, k+1);
-  //     if (d >= 0 && ((sofar == -1 ) || (d + nxt->dist) < sofar)) {
-  //       sofar = (d + nxt->dist);
-  //     }
-  //   }
-  //   nxt = nxt->next;
-  // }
-  // return sofar;
+  if (from == to) {
+    return 0;
+  }
+  int sofar = -1;
+  // Check all connections
+  for(int i = 0; i < from->n; i++) {
+    connection *nxt = &from->recent_connections[i];
+    if (!loop(path, k, nxt->dst)) {
+      // Add the city to the path
+      path[k] = nxt->dst;
+      int d = shortest_path(nxt->dst, to, path, k+1);
+      if (d >= 0 && ((sofar == -1 ) || (d + nxt->time) < sofar)) {
+        sofar = (d + nxt->time);
+      }
+    }
+  }
+  return sofar;
+}
+
+// Returns 1 if the city is already in the path, 0 otherwise
+int loop(city **path, int k, city *dst) {
+  for (int i = 0; i < k; i++) {
+    if (path[i] == dst) {
+      return 1;  // City found in path, loop detected
+    }
+  }
+  return 0;  // No loop detected
 }

@@ -1,11 +1,7 @@
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n+nf}{shortest}\PYG{p}{(}\PYG{n}{city}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{from}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{city}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{to}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{left}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{path}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{path}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n+nf}{shortest}\PYG{p}{(}\PYG{n}{city}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{from}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{city}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{to}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{left}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
 \PYG{+w}{  }\PYG{c+c1}{// Reached destination}
 \PYG{+w}{  }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{from}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{n}{to}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
-\PYG{+w}{    }\PYG{n}{path}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{n}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}
-\PYG{+w}{    }\PYG{n}{path}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{cities}\PYG{p}{[}\PYG{n}{path}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{n}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{from}\PYG{p}{;}
-\PYG{+w}{    }\PYG{n}{path}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{times}\PYG{p}{[}\PYG{n}{path}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{n}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}
-\PYG{+w}{    }\PYG{n}{path}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{n}\PYG{o}{++}\PYG{p}{;}
 \PYG{+w}{    }\PYG{k}{return}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}
 \PYG{+w}{  }\PYG{p}{\PYGZcb{}}
 
@@ -22,24 +18,15 @@
 
 \PYG{+w}{      }\PYG{c+c1}{// Recursively call the function}
 \PYG{+w}{      }\PYG{c+c1}{// check children}
-\PYG{+w}{      }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{d}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{shortest}\PYG{p}{(}\PYG{n}{c}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{dst}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{to}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{left}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{path}\PYG{p}{);}
+\PYG{+w}{      }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{d}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{shortest}\PYG{p}{(}\PYG{n}{c}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{dst}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{to}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{left}\PYG{p}{);}
 
 \PYG{+w}{      }\PYG{c+c1}{// If the destination is reached or the time is less than the previous time}
-\PYG{+w}{      }\PYG{c+c1}{// update the path}
+\PYG{+w}{      }\PYG{c+c1}{// update the time}
 \PYG{+w}{      }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{d}\PYG{+w}{ }\PYG{o}{\PYGZgt{}=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{+w}{ }\PYG{o}{\PYGZam{}\PYGZam{}}\PYG{+w}{ }\PYG{p}{((}\PYG{n}{sofar}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{l+m+mi}{\PYGZhy{}1}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{||}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{d}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{n}{c}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{time}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{sofar}\PYG{p}{))}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
 \PYG{+w}{        }\PYG{n}{sofar}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{d}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{n}{c}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{time}\PYG{p}{);}
-\PYG{+w}{        }\PYG{n}{path}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{cities}\PYG{p}{[}\PYG{n}{path}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{n}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{from}\PYG{p}{;}
-\PYG{+w}{        }\PYG{n}{path}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{times}\PYG{p}{[}\PYG{n}{path}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{n}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{c}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{time}\PYG{p}{;}
-\PYG{+w}{        }\PYG{n}{update}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{;}
 \PYG{+w}{      }\PYG{p}{\PYGZcb{}}
 \PYG{+w}{    }\PYG{p}{\PYGZcb{}}
 \PYG{+w}{  }\PYG{p}{\PYGZcb{}}
-
-\PYG{+w}{  }\PYG{c+c1}{// After check all connections, if the path is updated,}
-\PYG{+w}{  }\PYG{c+c1}{// increase the number of cities}
-\PYG{+w}{  }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{update}\PYG{p}{)}
-\PYG{+w}{    }\PYG{n}{path}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{n}\PYG{o}{++}\PYG{p}{;}
-
 \PYG{+w}{  }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{sofar}\PYG{p}{;}
 \PYG{p}{\PYGZcb{}}
 \end{Verbatim}

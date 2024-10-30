@@ -46,5 +46,6 @@ city *lookup_city(map *map, char *name);
 connection *lookup_connection(city *src, city *dst);
 int shortest(city *src, city *dst, int left, path *path);
 int shortest_path(city *from, city *to, city **path, int k);
+int loop(city **path, int k, city *dst);
 
 #endif // _MAP_H_

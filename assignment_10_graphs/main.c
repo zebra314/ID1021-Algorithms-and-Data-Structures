@@ -37,6 +37,7 @@ void free_path(path *pathes) {
 int main() {
   map *trains = graph("./trains.csv");
   path *pathes = new_path();
+  city **path = (city**)malloc(sizeof(city*)*100);
 
   clock_gettime(CLOCK_REALTIME, &t_start);
 
@@ -47,19 +48,29 @@ int main() {
 // int time = shortest(lookup_city(trains, "Stockholm"), lookup_city(trains, "Umeå"), 1100, pathes);
 // int time = shortest(lookup_city(trains, "Göteborg"), lookup_city(trains, "Sundsvall"), 1000, pathes);
 // int time = shortest(lookup_city(trains, "Sundsvall"), lookup_city(trains, "Umeå"), 500, pathes);
-// int time = shortest(lookup_city(trains, "Umeå"), lookup_city(trains, "Göteborg"), 1400, pathes);
-int time = shortest(lookup_city(trains, "Göteborg"), lookup_city(trains, "Umeå"), 1400, pathes);
+// int time = shortest(lookup_city(trains, "Umeå"), lookup_city(trains, "Göteborg"), 2000, pathes);
+// int time = shortest(lookup_city(trains, "Göteborg"), lookup_city(trains, "Umeå"), 1400, pathes);
+
+// int time = shortest_path(lookup_city(trains, "Malmö"), lookup_city(trains, "Göteborg"), path, 0);
+// int time = shortest_path(lookup_city(trains, "Göteborg"), lookup_city(trains, "Stockholm"), path, 0);
+// int time = shortest_path(lookup_city(trains, "Malmö"), lookup_city(trains, "Stockholm"), path, 0);
+// int time = shortest_path(lookup_city(trains, "Stockholm"), lookup_city(trains, "Sundsvall"), path, 0);
+// int time = shortest_path(lookup_city(trains, "Stockholm"), lookup_city(trains, "Umeå"), path, 0);
+// int time = shortest_path(lookup_city(trains, "Göteborg"), lookup_city(trains, "Sundsvall"), path, 0);
+// int time = shortest_path(lookup_city(trains, "Sundsvall"), lookup_city(trains, "Umeå"), path, 0);
+// int time = shortest_path(lookup_city(trains, "Umeå"), lookup_city(trains, "Göteborg"), path, 0);
+int time = shortest_path(lookup_city(trains, "Göteborg"), lookup_city(trains, "Umeå"), path, 0);
 
   clock_gettime(CLOCK_REALTIME, &t_stop);
 
   printf("Shortest time: %d\n", time);
   printf("Compute time: %ld ns\n", nano_seconds(&t_start, &t_stop));
   
-  // for(int i = pathes->n - 1; i >= 0; i--) {
-  //   printf("%s\n", pathes->cities[i].name);
-  //   if(i > 0)
-  //     printf("%d\n", pathes->times[i]);
-  // }
+//   for(int i = pathes->n - 1; i >= 0; i--) {
+//     printf("%s\n", pathes->cities[i].name);
+//     if(i > 0)
+//       printf("%d\n", pathes->times[i]);
+//   }
 
   free_map(trains);
   free_path(pathes);
