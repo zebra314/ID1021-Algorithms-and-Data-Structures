@@ -43,6 +43,7 @@ map *graph(char *file) {
   return trains;
 }
 
+// Return the pointer to the city with the name, if it does not exist, create it
 city *lookup_city(map *map, char *name) {
   int index = hash(name, map->capacity);
   while(map->cities[index].name != NULL && strcmp(map->cities[index].name, name) != 0) {
@@ -60,6 +61,16 @@ city *lookup_city(map *map, char *name) {
     map->n++;
   }
   return &map->cities[index];
+}
+
+// Return the connection between src and dst, if it does not exist, return NULL
+connection *lookup_connection(city *src, city *dst) {
+  for(int i = 0; i < src->n; i++) {
+    if(src->connections[i].dst == dst && src->connections[i].dst != NULL) {
+      return &src->connections[i];
+    }
+  }
+  return NULL;
 }
 
 // Set up connection information at both src and dst cities
@@ -112,6 +123,14 @@ int hash(char *name, int mod) {
   return h;
 }
 
+path *new_path() {
+  path *p = (path*)malloc(sizeof(path));
+  p->cities = (city*)malloc(sizeof(city)*MOD);
+  p->times = (int*)malloc(sizeof(int)*MOD);
+  p->n = 0;
+  return p;
+}
+
 /* -------------------------------------------------------------------------- */
 /*                                   Search                                   */
 /* -------------------------------------------------------------------------- */
@@ -119,11 +138,13 @@ int hash(char *name, int mod) {
 int shortest(city *from, city *to, int left, path *path) {
   if (from == to) {
     path->cities[path->n] = *from;
+    path->times[path->n] = 0;
     path->n++;
     return 0;
   }
 
   int sofar = -1;
+  int update = 0;
   for(int i = 0; i < from->n; i++) {
     connection *c = &from->recent_connections[i];
     if (c->time <= left) {
@@ -132,9 +153,12 @@ int shortest(city *from, city *to, int left, path *path) {
       if (d >= 0 && ((sofar == -1) || (d + c->time) < sofar)) {
         sofar = (d + c->time);
         path->cities[path->n] = *from;
+        path->times[path->n] = c->time;
+        update = 1;
       }
     }
   }
-  path->n++;
+  if (update)
+    path->n++;
   return sofar;
 }

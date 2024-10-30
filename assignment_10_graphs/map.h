@@ -31,6 +31,7 @@ typedef struct map {
 
 typedef struct path {
   city *cities;  // Array of cities
+  int *times;    // Array of times
   int n;         // Number of cities
 } path;
 
@@ -38,9 +39,11 @@ typedef struct path {
 map *graph(char *file);
 void connect(city *src, city *dst, int time);
 int hash(char *name, int mod);
+path *new_path();
 
 // Search
 city *lookup_city(map *map, char *name);
+connection *lookup_connection(city *src, city *dst);
 int shortest(city *src, city *dst, int left, path *path);
 
 #endif // _MAP_H_
