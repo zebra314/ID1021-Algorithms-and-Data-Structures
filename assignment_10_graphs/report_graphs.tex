@@ -174,77 +174,92 @@ int shortest(city *from, city *to, int left, path *path) {
 
 \subsection*{Some benchmarks}
 
-\begin{longtable}{|l|l|>{\centering\arraybackslash}m{2.5cm}|>{\centering\arraybackslash}m{2.5cm}|}
-  \caption{Shortest Path Results and Computation Time} \\
-  \hline
-  \textbf{Start} & \textbf{Destination} & \textbf{Total Time (min)} & \textbf{Computation Time (ms)} \\
-  \hline
-  \endfirsthead
-  \hline
-  \textbf{Start} & \textbf{Destination} & \textbf{Total Time (min)} & \textbf{Computation Time (ms)} \\
-  \hline
-  \endhead
-  \hline
-  \multicolumn{4}{|r|}{\textit{Continued on next page}} \\
-  \hline
-  \endfoot
-  \hline
-  \endlastfoot
-  Malmö & Göteborg & 153 & 1.3 \\
-  \hline
-  Göteborg & Stockholm & 211 & 18.1 \\
-  \hline
-  Malmö & Stockholm & 273 & 151 \\
-  \hline
-  Stockholm & Sundsvall & 327 & 28800 \\
-  \hline
-  Stockholm & Umeå & 517 & 8840000 \\
-  \hline
-  Göteborg & Sundsvall & 515 & 1120000 \\
-  \hline
-  Sundsvall & Umeå & 190 & 1.5 \\
-  \hline
-  Umeå & Göteborg & 728 & 143000 \\
-  \hline
-  Göteborg & Umeå & 330 & 6.8 \\
-  \hline
-\end{longtable}
+Table \ref{table:result_and_times} shows the results of the shortest path between two cities and the computation time.
+Table \ref{table:result_with_paths} shows the results of the shortest path between two cities with the travel times.
 
-\begin{longtable}{|m{2.5cm}|m{2.5cm}|>{\arraybackslash}m{5cm}|>{\centering\arraybackslash}m{2.5cm}|}
-  \caption{Shortest Path Results with Travel Times} \\
-  \hline
-  \textbf{Start} & \textbf{Destination} & \textbf{Path (with travel times)} & \textbf{Total Time (min)} \\
-  \hline
-  \endfirsthead
-  \hline
-  \textbf{Start} & \textbf{Destination} & \textbf{Path (with travel times)} & \textbf{Total Time (min)} \\
-  \hline
-  \endhead
-  \hline
-  \multicolumn{4}{|l|}{\textit{Continued on next page}} \\
-  \hline
-  \endfoot
-  \hline
-  \endlastfoot
-  Malmö & Göteborg & Malmö $\rightarrow$ Lund (13) $\rightarrow$ Åstorp (36) $\rightarrow$ Halmstad (36) $\rightarrow$ Varberg (29) $\rightarrow$ Göteborg (39) & 153 \\
-  \hline
-  Göteborg & Stockholm & Göteborg $\rightarrow$ Herrljunga (39) $\rightarrow$ Falköping (15) $\rightarrow$ Skövde (16) $\rightarrow$ Hallsberg (42) $\rightarrow$ Katrineholm (31) $\rightarrow$ Södertälje (47) $\rightarrow$ Stockholm (21) & 211 \\
-  \hline
-  Malmö & Stockholm & Malmö $\rightarrow$ Lund (13) $\rightarrow$ Helsingborg (30) $\rightarrow$ Lund (35) $\rightarrow$ Hässleholm (30) $\rightarrow$ Alvesta (38) $\rightarrow$ Nässjö (33) $\rightarrow$ Mjölby (39) $\rightarrow$ Linköping (16) $\rightarrow$ Norrköping (24) $\rightarrow$ Södertälje (59) $\rightarrow$ Stockholm (21) & 273 \\
-  \hline
-  Stockholm & Sundsvall & Stockholm $\rightarrow$ Uppsala (35) $\rightarrow$ Sundsvall (120) & 155 \\
-  \hline
-  Stockholm & Umeå & Stockholm $\rightarrow$ Gävle (60) $\rightarrow$ Umeå (210) & 270 \\
-  \hline
-  Göteborg & Sundsvall & Göteborg $\rightarrow$ Örebro (140) $\rightarrow$ Sundsvall (140) & 280 \\
-  \hline
-  Sundsvall & Umeå & Sundsvall $\rightarrow$ Härnösand (35) $\rightarrow$ Umeå (160) & 195 \\
-  \hline
-  Umeå & Göteborg & Umeå $\rightarrow$ Sundsvall (160) $\rightarrow$ Göteborg (180) & 340 \\
-  \hline
-  Göteborg & Umeå & Göteborg $\rightarrow$ Örebro (140) $\rightarrow$ Umeå (190) & 330 \\
-  \hline
-\end{longtable}
+\begin{center}
+  \begin{longtable}{|l|l|>{\centering\arraybackslash}m{2.5cm}|>{\centering\arraybackslash}m{2.5cm}|}
+    \caption{Shortest Path Results and Computation Time} \label{table:result_and_times} \\
+    \hline
+    \textbf{Start} & \textbf{Destination} & \textbf{Total Time (min)} & \textbf{Computation Time (ms)} \\
+    \hline
+    \endfirsthead
+    \hline
+    \textbf{Start} & \textbf{Destination} & \textbf{Total Time (min)} & \textbf{Computation Time (ms)} \\
+    \hline
+    \endhead
+    \hline
+    \multicolumn{4}{|r|}{\textit{Continued on next page}} \\
+    \hline
+    \endfoot
+    \hline
+    \endlastfoot
+    Malmö & Göteborg & 153 & 1.3 \\
+    \hline
+    Göteborg & Stockholm & 211 & 18.1 \\
+    \hline
+    Malmö & Stockholm & 273 & 151 \\
+    \hline
+    Stockholm & Sundsvall & 327 & 28800 \\
+    \hline
+    Stockholm & Umeå & 517 & 8840000 \\
+    \hline
+    Göteborg & Sundsvall & 515 & 1120000 \\
+    \hline
+    Sundsvall & Umeå & 190 & 1.5 \\
+    \hline
+    Umeå & Göteborg & 728 & 143000 \\
+    \hline
+    Göteborg & Umeå & 330 & 6.8 \\
+    \hline
+  \end{longtable}
+\end{center}
 
+\begin{center}
+  \begin{longtable}{|m{2.5cm}|m{2.5cm}|>{\arraybackslash}m{5cm}|>{\centering\arraybackslash}m{2.5cm}|}
+    \caption{Shortest Path Results with Travel Times} \label{table:result_with_paths} \\
+    \hline
+    \textbf{Start} & \textbf{Destination} & \textbf{Path (with travel times)} & \textbf{Total Time (min)} \\
+    \hline
+    \endfirsthead
+    \hline
+    \textbf{Start} & \textbf{Destination} & \textbf{Path (with travel times)} & \textbf{Total Time (min)} \\
+    \hline
+    \endhead
+    \hline
+    \multicolumn{4}{|l|}{\textit{Continued on next page}} \\
+    \hline
+    \endfoot
+    \hline
+    \endlastfoot
+    Malmö & Göteborg & Malmö $\rightarrow$ Lund (13) $\rightarrow$ Åstorp (36) $\rightarrow$ Halmstad (36) $\rightarrow$ Varberg (29) $\rightarrow$ Göteborg (39) & 153 \\
+    \hline
+    Göteborg & Stockholm & Göteborg $\rightarrow$ Herrljunga (39) $\rightarrow$ Falköping (15) $\rightarrow$ Skövde (16) $\rightarrow$ Hallsberg (42) $\rightarrow$ Katrineholm (31) $\rightarrow$ Södertälje (47) $\rightarrow$ Stockholm (21) & 211 \\
+    \hline
+    Malmö & Stockholm & Malmö $\rightarrow$ Lund (13) $\rightarrow$ Helsingborg (30) $\rightarrow$ Lund (35) $\rightarrow$ Hässleholm (30) $\rightarrow$ Alvesta (38) $\rightarrow$ Nässjö (33) $\rightarrow$ Mjölby (39) $\rightarrow$ Linköping (16) $\rightarrow$ Norrköping (24) $\rightarrow$ Södertälje (59) $\rightarrow$ Stockholm (21) & 273 \\
+    \hline
+    Stockholm & Sundsvall & Stockholm $\rightarrow$ Uppsala (35) $\rightarrow$ Sundsvall (120) & 155 \\
+    \hline
+    Stockholm & Umeå & Stockholm $\rightarrow$ Gävle (60) $\rightarrow$ Umeå (210) & 270 \\
+    \hline
+    Göteborg & Sundsvall & Göteborg $\rightarrow$ Örebro (140) $\rightarrow$ Sundsvall (140) & 280 \\
+    \hline
+    Sundsvall & Umeå & Sundsvall $\rightarrow$ Härnösand (35) $\rightarrow$ Umeå (160) & 195 \\
+    \hline
+    Umeå & Göteborg & Umeå $\rightarrow$ Sundsvall (160) $\rightarrow$ Göteborg (180) & 340 \\
+    \hline
+    Göteborg & Umeå & Göteborg $\rightarrow$ Örebro (140) $\rightarrow$ Umeå (190) & 330 \\
+    \hline
+  \end{longtable}
+\end{center}
+\section*{Improvements}
+
+Until I entered this section, I realized that I could use the path to avoid the repeated cities in the path.
+Referring to the code provided in the assignment, I abondoned the original path struct and use the city struct
+array to store the path. Below is the new code snippet for the depth-first search algorithm.
+
+\begin{minted}{c}
+
+\end{minted}
 
 \end{document}

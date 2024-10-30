@@ -178,3 +178,21 @@ int shortest(city *from, city *to, int left, path *path) {
 
   return sofar;
 }
+
+int shortest_path(city *from, city *to, city **path, int k) {
+  // if (from == to) {
+  //   return 0;
+  // }
+  // int sofar = -1;
+  // connection *nxt = from->connections;
+  // while(nxt != NULL) {
+  //   if (!loop(path, k, nxt->dst)) {
+  //     int d = shortest_path(nxt->dst, to, path, k+1);
+  //     if (d >= 0 && ((sofar == -1 ) || (d + nxt->dist) < sofar)) {
+  //       sofar = (d + nxt->dist);
+  //     }
+  //   }
+  //   nxt = nxt->next;
+  // }
+  // return sofar;
+}
