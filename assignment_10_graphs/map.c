@@ -136,20 +136,32 @@ path *new_path() {
 /* -------------------------------------------------------------------------- */
 
 int shortest(city *from, city *to, int left, path *path) {
+  // Reached destination
   if (from == to) {
+    path->n = 0;
     path->cities[path->n] = *from;
     path->times[path->n] = 0;
     path->n++;
     return 0;
   }
 
-  int sofar = -1;
-  int update = 0;
+  int sofar = -1; // Time to destination
+  int update = 0; // Update path
+
+  // Check all connections
   for(int i = 0; i < from->n; i++) {
     connection *c = &from->recent_connections[i];
+
+    // If there is time left, try to reach the destination
     if (c->time <= left) {
       left -= c->time;
+
+      // Recursively call the function
+      // check children
       int d = shortest(c->dst, to, left, path);
+
+      // If the destination is reached or the time is less than the previous time
+      // update the path
       if (d >= 0 && ((sofar == -1) || (d + c->time) < sofar)) {
         sofar = (d + c->time);
         path->cities[path->n] = *from;
@@ -158,7 +170,11 @@ int shortest(city *from, city *to, int left, path *path) {
       }
     }
   }
+
+  // After check all connections, if the path is updated, 
+  // increase the number of cities
   if (update)
     path->n++;
+
   return sofar;
 }

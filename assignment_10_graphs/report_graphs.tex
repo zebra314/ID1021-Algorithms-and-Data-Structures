@@ -9,6 +9,8 @@
 \usepackage{amsmath}
 \usepackage{array}
 \usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{longtable}
 \usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue]{hyperref}
 
 \usepackage{pgfplots}
@@ -27,6 +29,222 @@
 
 \maketitle
 
-\subsection*{}
+\subsection*{The graph}
+
+To build the graph of the cities in this assignment, I use the provided {\tt *graph(char *file)} function
+to read the file. After the file is read, the function will extract the cities and the time to travel
+between the cities in each line of the csv file and store them in the following structs.
+
+\begin{minted}{c}
+typedef struct connection {
+  city *dst;
+  int time;
+} connection;
+
+typedef struct city {
+  char *name;
+  connection *connections;        // Dynamic array of connections, Hash table
+  connection *recent_connections; // Array of recent connections
+  int n;                          // Number of connections
+  int capacity;                   // Capacity of connections
+} city;
+
+typedef struct map {
+  city *cities; // Dynamic array of cities
+  int n;        // Number of cities
+  int capacity; // Capacity of cities
+} map;
+\end{minted}
+
+Then, I use the {\tt connect\_cities(map *m, char *city1, char *city2, int time)} function
+to connect the cities with the time to travel between them. It is two-way connection, which
+means I need to set up the connection elements for both cities. Down below is the code snippet
+to connect the cities.
+
+\begin{minted}{c}
+void connect(city *src, city *dst, int time) {
+  connection *c = (connection*)malloc(sizeof(connection));
+  int index; // For the hash function
+  c->time = time;
+
+  // Set connection at city src
+  c->dst = dst;
+  if(src->n >= src->capacity) {
+    src->capacity *= 2;
+    src->connections = realloc(src->connections, src->capacity * sizeof(connection));
+  }
+
+  index = hash(dst->name, src->capacity);
+  while(src->connections[index].dst != NULL) {
+    index = (index + 1) % src->capacity;
+  }
+  src->connections[index] = *c;
+  src->recent_connections[src->n] = *c;
+  src->n++;
+
+  // Set connection at city dst
+  c->dst = src;
+  if(dst->n >= dst->capacity) {
+    dst->capacity *= 2;
+    dst->connections = realloc(dst->connections, dst->capacity * sizeof(connection));
+  }
+
+  index = hash(src->name, dst->capacity);
+  while(dst->connections[index].dst != NULL) {
+    index = (index + 1) % dst->capacity;
+  }
+  dst->connections[index] = *c;
+  dst->recent_connections[dst->n] = *c;
+  dst->n++;
+}
+\end{minted}
+
+I store the connection in {\tt *connections} and {\tt *recent\_connections} in the city struct.
+The {\tt *connections} is a hash table using the destination city name as the key and it is used
+when we want to find the connection between two cities by name. 
+The {\tt *recent\_connections} on the other hand is an array of connections and it is used when
+we want to iterate through all the connections of a city. It is also used in the depth-first search
+algorithm.
+
+\subsection*{Depth-first search}
+
+One way to find the shortest path between two cities is to use the depth-first search algorithm.
+To record the path, I create a struct called {\tt path} to store the cities and the time to travel between
+the cities. The struct is defined as follows.
+
+\begin{minted}{c}
+typedef struct path {
+  city *cities;  // Array of cities
+  int *times;    // Array of times
+  int n;         // Number of cities
+} path;
+\end{minted}
+
+The depth-first search algorithm is implemented in the {\tt shortest(city *from, city *to, int left, path *path)}.
+The function will recursively call itself to find the destination city. If the destination city is reached,
+it will return 0. If the destination city is not reached, it will iterate through all the connections of the
+current city and recursively call the function with the time left to travel. If we find a path that is shorter
+than the previous path, we will update the path.
+
+\begin{minted}{c}
+int shortest(city *from, city *to, int left, path *path) {
+  // Reached destination
+  if (from == to) {
+    path->n = 0;
+    path->cities[path->n] = *from;
+    path->times[path->n] = 0;
+    path->n++;
+    return 0;
+  }
+
+  int sofar = -1; // Time to destination
+  int update = 0; // Update path
+
+  // Check all connections
+  for(int i = 0; i < from->n; i++) {
+    connection *c = &from->recent_connections[i];
+
+    // If there is time left, try to reach the destination
+    if (c->time <= left) {
+      left -= c->time;
+
+      // Recursively call the function
+      // check children
+      int d = shortest(c->dst, to, left, path);
+
+      // If the destination is reached or the time is less than the previous time
+      // update the path
+      if (d >= 0 && ((sofar == -1) || (d + c->time) < sofar)) {
+        sofar = (d + c->time);
+        path->cities[path->n] = *from;
+        path->times[path->n] = c->time;
+        update = 1;
+      }
+    }
+  }
+
+  // After check all connections, if the path is updated, 
+  // increase the number of cities
+  if (update)
+    path->n++;
+
+  return sofar;
+}
+\end{minted}
+
+\subsection*{Some benchmarks}
+
+\begin{longtable}{|l|l|>{\centering\arraybackslash}m{2.5cm}|>{\centering\arraybackslash}m{2.5cm}|}
+  \caption{Shortest Path Results and Computation Time} \\
+  \hline
+  \textbf{Start} & \textbf{Destination} & \textbf{Total Time (min)} & \textbf{Computation Time (ms)} \\
+  \hline
+  \endfirsthead
+  \hline
+  \textbf{Start} & \textbf{Destination} & \textbf{Total Time (min)} & \textbf{Computation Time (ms)} \\
+  \hline
+  \endhead
+  \hline
+  \multicolumn{4}{|r|}{\textit{Continued on next page}} \\
+  \hline
+  \endfoot
+  \hline
+  \endlastfoot
+  Malmö & Göteborg & 153 & 1.3 \\
+  \hline
+  Göteborg & Stockholm & 211 & 18.1 \\
+  \hline
+  Malmö & Stockholm & 273 & 151 \\
+  \hline
+  Stockholm & Sundsvall & 327 & 28800 \\
+  \hline
+  Stockholm & Umeå & 517 & 8840000 \\
+  \hline
+  Göteborg & Sundsvall & 515 & 1120000 \\
+  \hline
+  Sundsvall & Umeå & 190 & 1.5 \\
+  \hline
+  Umeå & Göteborg & 728 & 143000 \\
+  \hline
+  Göteborg & Umeå & 330 & 6.8 \\
+  \hline
+\end{longtable}
+
+\begin{longtable}{|m{2.5cm}|m{2.5cm}|>{\arraybackslash}m{5cm}|>{\centering\arraybackslash}m{2.5cm}|}
+  \caption{Shortest Path Results with Travel Times} \\
+  \hline
+  \textbf{Start} & \textbf{Destination} & \textbf{Path (with travel times)} & \textbf{Total Time (min)} \\
+  \hline
+  \endfirsthead
+  \hline
+  \textbf{Start} & \textbf{Destination} & \textbf{Path (with travel times)} & \textbf{Total Time (min)} \\
+  \hline
+  \endhead
+  \hline
+  \multicolumn{4}{|l|}{\textit{Continued on next page}} \\
+  \hline
+  \endfoot
+  \hline
+  \endlastfoot
+  Malmö & Göteborg & Malmö $\rightarrow$ Lund (13) $\rightarrow$ Åstorp (36) $\rightarrow$ Halmstad (36) $\rightarrow$ Varberg (29) $\rightarrow$ Göteborg (39) & 153 \\
+  \hline
+  Göteborg & Stockholm & Göteborg $\rightarrow$ Herrljunga (39) $\rightarrow$ Falköping (15) $\rightarrow$ Skövde (16) $\rightarrow$ Hallsberg (42) $\rightarrow$ Katrineholm (31) $\rightarrow$ Södertälje (47) $\rightarrow$ Stockholm (21) & 211 \\
+  \hline
+  Malmö & Stockholm & Malmö $\rightarrow$ Lund (13) $\rightarrow$ Helsingborg (30) $\rightarrow$ Lund (35) $\rightarrow$ Hässleholm (30) $\rightarrow$ Alvesta (38) $\rightarrow$ Nässjö (33) $\rightarrow$ Mjölby (39) $\rightarrow$ Linköping (16) $\rightarrow$ Norrköping (24) $\rightarrow$ Södertälje (59) $\rightarrow$ Stockholm (21) & 273 \\
+  \hline
+  Stockholm & Sundsvall & Stockholm $\rightarrow$ Uppsala (35) $\rightarrow$ Sundsvall (120) & 155 \\
+  \hline
+  Stockholm & Umeå & Stockholm $\rightarrow$ Gävle (60) $\rightarrow$ Umeå (210) & 270 \\
+  \hline
+  Göteborg & Sundsvall & Göteborg $\rightarrow$ Örebro (140) $\rightarrow$ Sundsvall (140) & 280 \\
+  \hline
+  Sundsvall & Umeå & Sundsvall $\rightarrow$ Härnösand (35) $\rightarrow$ Umeå (160) & 195 \\
+  \hline
+  Umeå & Göteborg & Umeå $\rightarrow$ Sundsvall (160) $\rightarrow$ Göteborg (180) & 340 \\
+  \hline
+  Göteborg & Umeå & Göteborg $\rightarrow$ Örebro (140) $\rightarrow$ Umeå (190) & 330 \\
+  \hline
+\end{longtable}
+
 
 \end{document}
