@@ -1,0 +1,25 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{typedef}\PYG{+w}{ }\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{TreeNode}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{value}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{TreeNode}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{left}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{TreeNode}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{right}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{n}{TreeNode}\PYG{p}{;}
+
+\PYG{k}{typedef}\PYG{+w}{ }\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{Tree}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{n}{TreeNode}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{root}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{n}{Tree}\PYG{p}{;}
+
+\PYG{k}{typedef}\PYG{+w}{ }\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{QueueNode}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{n}{TreeNode}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{tree\PYGZus{}node}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{QueueNode}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{next}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{n}{QueueNode}\PYG{p}{;}
+
+\PYG{k}{typedef}\PYG{+w}{ }\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{Queue}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{n}{QueueNode}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{front}\PYG{p}{;}
+\PYG{+w}{  }\PYG{n}{QueueNode}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{rear}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{n}{Queue}\PYG{p}{;}
+
+\PYG{k}{typedef}\PYG{+w}{ }\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{Sequence}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{n}{Queue}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{queue}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{n}{Sequence}\PYG{p}{;}
+\end{Verbatim}

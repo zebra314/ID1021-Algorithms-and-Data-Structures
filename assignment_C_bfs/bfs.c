@@ -95,12 +95,11 @@ TreeNode* dequeue(Queue* queue) {
   if (queue->front == queue->rear) {
     queue->front = NULL;
     queue->rear = NULL;
-    return tree_node;
+  } else {
+    // Move the front pointer to the next node
+    queue->front = queue->front->next;
   }
 
-  // Move the second node to the front
-  queue->front = queue->front->next;
-  
   return tree_node;
 }
 

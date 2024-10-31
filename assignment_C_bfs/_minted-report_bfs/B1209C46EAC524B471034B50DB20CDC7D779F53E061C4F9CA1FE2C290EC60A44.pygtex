@@ -1,0 +1,19 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{enqueue}\PYG{p}{(}\PYG{n}{Queue}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{queue}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{TreeNode}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{tree\PYGZus{}node}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{c+c1}{// Create a new queue node}
+\PYG{+w}{  }\PYG{n}{QueueNode}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{new\PYGZus{}node}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{QueueNode}\PYG{o}{*}\PYG{p}{)}\PYG{n}{malloc}\PYG{p}{(}\PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{QueueNode}\PYG{p}{));}
+\PYG{+w}{  }\PYG{n}{new\PYGZus{}node}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{tree\PYGZus{}node}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{tree\PYGZus{}node}\PYG{p}{;}
+\PYG{+w}{  }\PYG{n}{new\PYGZus{}node}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{next}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n+nb}{NULL}\PYG{p}{;}
+
+\PYG{+w}{  }\PYG{c+c1}{// Queue is empty}
+\PYG{+w}{  }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{queue}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{front}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{n+nb}{NULL}\PYG{+w}{ }\PYG{o}{\PYGZam{}\PYGZam{}}\PYG{+w}{ }\PYG{n}{queue}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{rear}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{n+nb}{NULL}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{queue}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{front}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{new\PYGZus{}node}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{queue}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{rear}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{new\PYGZus{}node}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{return}\PYG{p}{;}
+\PYG{+w}{  }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{  }\PYG{c+c1}{// Add the new node at the end of queue}
+\PYG{+w}{  }\PYG{n}{queue}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{rear}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{next}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{new\PYGZus{}node}\PYG{p}{;}
+\PYG{+w}{  }\PYG{n}{queue}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{rear}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{new\PYGZus{}node}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

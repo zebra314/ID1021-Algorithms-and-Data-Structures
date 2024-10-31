@@ -1,0 +1,10 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{Sequence}\PYG{o}{*}\PYG{+w}{ }\PYG{n+nf}{create\PYGZus{}sequence}\PYG{p}{(}\PYG{n}{Tree}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{tree}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{n}{Sequence}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{seq}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{Sequence}\PYG{o}{*}\PYG{p}{)}\PYG{n}{malloc}\PYG{p}{(}\PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{Sequence}\PYG{p}{));}
+\PYG{+w}{  }\PYG{n}{seq}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{queue}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{create\PYGZus{}queue}\PYG{p}{();}
+\PYG{+w}{  }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{tree}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{root}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{n+nb}{NULL}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{enqueue}\PYG{p}{(}\PYG{n}{seq}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{queue}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{tree}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{root}\PYG{p}{);}
+\PYG{+w}{  }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{  }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{seq}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}
