@@ -36,6 +36,7 @@ typedef struct Sequence {
 // Tree operations
 TreeNode* create_node(int value);
 Tree* create_tree();
+Tree* construct_tree();
 
 // Queue operations
 Queue* create_queue();
