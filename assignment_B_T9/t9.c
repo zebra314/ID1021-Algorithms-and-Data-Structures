@@ -142,10 +142,10 @@ void print_method2(const wchar_t *wstr) {
 
 // printf with %lc
 void print_method3(const wchar_t *wstr) {
-    // printf("Method 3 (printf %%lc): ");
-    while (*wstr) {
-      printf("%lc", *wstr);
-      wstr++;
-    }
-    printf("\n");
+  // printf("Method 3 (printf %%lc): ");
+  while (*wstr) {
+    printf("%lc", *wstr);
+    wstr++;
+  }
+  printf("\n");
 }
