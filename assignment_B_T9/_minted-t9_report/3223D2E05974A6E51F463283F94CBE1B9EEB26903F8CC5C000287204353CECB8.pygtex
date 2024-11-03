@@ -1,0 +1,13 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{while}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{fgets}\PYG{p}{(}\PYG{n}{buf}\PYG{p}{,}\PYG{+w}{ }\PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{buf}\PYG{p}{),}\PYG{+w}{ }\PYG{n}{fptr}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{n+nb}{NULL}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{c+c1}{// Remove newline character}
+\PYG{+w}{  }\PYG{n}{buf}\PYG{p}{[}\PYG{n}{strcspn}\PYG{p}{(}\PYG{n}{buf}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{)]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}
+
+\PYG{+w}{  }\PYG{c+c1}{// Convert to wide character}
+\PYG{+w}{  }\PYG{n}{mbstowcs}\PYG{p}{(}\PYG{n}{wbuf}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{buf}\PYG{p}{,}\PYG{+w}{ }\PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{buf}\PYG{p}{));}
+\PYG{+w}{  }\PYG{n}{combine\PYGZus{}unicode}\PYG{p}{(}\PYG{n}{wbuf}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{result}\PYG{p}{);}
+
+\PYG{+w}{  }\PYG{c+c1}{// Add word to trie}
+\PYG{+w}{  }\PYG{n}{kelly}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{root}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{add}\PYG{p}{(}\PYG{n}{kelly}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{root}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{result}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

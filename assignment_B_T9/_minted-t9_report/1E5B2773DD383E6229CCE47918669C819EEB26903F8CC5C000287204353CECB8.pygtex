@@ -1,0 +1,37 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{combine\PYGZus{}unicode}\PYG{p}{(}\PYG{k+kt}{wchar\PYGZus{}t}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{input}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{wchar\PYGZus{}t}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{output}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{k}{while}\PYG{+w}{ }\PYG{p}{(}\PYG{o}{*}\PYG{n}{input}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{c+c1}{// Check if current character is 0xC3 (Ã) and next is available}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{o}{*}\PYG{n}{input}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{l+m+mh}{0x00C3}\PYG{+w}{ }\PYG{o}{\PYGZam{}\PYGZam{}}\PYG{+w}{ }\PYG{o}{*}\PYG{p}{(}\PYG{n}{input}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{))}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{      }\PYG{c+c1}{// Get the next character}
+\PYG{+w}{      }\PYG{k+kt}{wchar\PYGZus{}t}\PYG{+w}{ }\PYG{n}{next}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{o}{*}\PYG{p}{(}\PYG{n}{input}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{);}
+
+\PYG{+w}{      }\PYG{c+c1}{// Calculate the actual character e.g. For Ã¥ (0xC3 0xA5) \PYGZhy{}\PYGZgt{} å (0xE5)}
+\PYG{+w}{      }\PYG{k+kt}{wchar\PYGZus{}t}\PYG{+w}{ }\PYG{n}{combined}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}
+\PYG{+w}{      }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{next}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{l+m+mh}{0x00A5}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}\PYG{+w}{  }\PYG{c+c1}{// å}
+\PYG{+w}{        }\PYG{n}{combined}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mh}{0x00E5}\PYG{p}{;}
+\PYG{+w}{      }\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{k}{else}\PYG{+w}{ }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{next}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{l+m+mh}{0x00A4}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}\PYG{+w}{  }\PYG{c+c1}{// ä}
+\PYG{+w}{        }\PYG{n}{combined}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mh}{0x00E4}\PYG{p}{;}
+\PYG{+w}{      }\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{k}{else}\PYG{+w}{ }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{next}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{l+m+mh}{0x00B6}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}\PYG{+w}{  }\PYG{c+c1}{// ö}
+\PYG{+w}{        }\PYG{n}{combined}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mh}{0x00F6}\PYG{p}{;}
+\PYG{+w}{      }\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{k}{else}\PYG{+w}{ }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{next}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{l+m+mh}{0x0085}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}\PYG{+w}{  }\PYG{c+c1}{// Å}
+\PYG{+w}{        }\PYG{n}{combined}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mh}{0x00C5}\PYG{p}{;}
+\PYG{+w}{      }\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{k}{else}\PYG{+w}{ }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{next}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{l+m+mh}{0x0084}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}\PYG{+w}{  }\PYG{c+c1}{// Ä}
+\PYG{+w}{        }\PYG{n}{combined}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mh}{0x00C4}\PYG{p}{;}
+\PYG{+w}{      }\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{k}{else}\PYG{+w}{ }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{next}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{l+m+mh}{0x0096}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}\PYG{+w}{  }\PYG{c+c1}{// Ö}
+\PYG{+w}{        }\PYG{n}{combined}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mh}{0x00D6}\PYG{p}{;}
+\PYG{+w}{      }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{      }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{combined}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{o}{*}\PYG{n}{output}\PYG{o}{++}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{combined}\PYG{p}{;}
+\PYG{+w}{        }\PYG{n}{input}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{p}{;}\PYG{+w}{  }\PYG{c+c1}{// Skip both characters}
+\PYG{+w}{        }\PYG{k}{continue}\PYG{p}{;}
+\PYG{+w}{      }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{c+c1}{// Copy character}
+\PYG{+w}{    }\PYG{o}{*}\PYG{n}{output}\PYG{o}{++}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{input}\PYG{o}{++}\PYG{p}{;}
+\PYG{+w}{  }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{  }\PYG{o}{*}\PYG{n}{output}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s+sa}{L}\PYG{l+s+sc}{\PYGZsq{}\PYGZbs{}0\PYGZsq{}}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

@@ -25,6 +25,8 @@ trie *dict() {
     mbstowcs(wbuf, buf, sizeof(buf));
     combine_unicode(wbuf, result);
 
+    // printf("Adding: %ls\n", result);
+
     // Add word to trie
     kelly->root = add(kelly->root, result);
   }

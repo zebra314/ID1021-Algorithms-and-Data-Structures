@@ -1,0 +1,10 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{typedef}\PYG{+w}{ }\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{node}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{k+kt}{bool}\PYG{+w}{ }\PYG{n}{valid}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{node}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{next}\PYG{p}{[}\PYG{l+m+mi}{30}\PYG{p}{];}
+\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{n}{node}\PYG{p}{;}
+
+\PYG{k}{typedef}\PYG{+w}{ }\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{trie}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{n}{node}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{root}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{n}{trie}\PYG{p}{;}
+\end{Verbatim}

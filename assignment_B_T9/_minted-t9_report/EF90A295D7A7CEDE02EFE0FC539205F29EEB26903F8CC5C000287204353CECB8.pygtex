@@ -1,0 +1,14 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n+nf}{code}\PYG{p}{(}\PYG{k+kt}{wchar\PYGZus{}t}\PYG{+w}{ }\PYG{n}{w}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{w}\PYG{+w}{ }\PYG{o}{\PYGZgt{}=}\PYG{+w}{ }\PYG{l+s+sa}{L}\PYG{l+s+sc}{\PYGZsq{}a\PYGZsq{}}\PYG{+w}{ }\PYG{o}{\PYGZam{}\PYGZam{}}\PYG{+w}{ }\PYG{n}{w}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{l+s+sa}{L}\PYG{l+s+sc}{\PYGZsq{}z\PYGZsq{}}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{w}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+s+sa}{L}\PYG{l+s+sc}{\PYGZsq{}a\PYGZsq{}}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{w}\PYG{+w}{ }\PYG{o}{\PYGZgt{}=}\PYG{+w}{ }\PYG{l+s+sa}{L}\PYG{l+s+sc}{\PYGZsq{}A\PYGZsq{}}\PYG{+w}{ }\PYG{o}{\PYGZam{}\PYGZam{}}\PYG{+w}{ }\PYG{n}{w}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{l+s+sa}{L}\PYG{l+s+sc}{\PYGZsq{}Z\PYGZsq{}}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{w}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+s+sa}{L}\PYG{l+s+sc}{\PYGZsq{}A\PYGZsq{}}\PYG{p}{;}
+
+\PYG{+w}{  }\PYG{k}{switch}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{w}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{case}\PYG{+w}{ }\PYG{n+no}{L}\PYG{l+s+sc}{\PYGZsq{}å\PYGZsq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{k}{case}\PYG{+w}{ }\PYG{n+no}{L}\PYG{l+s+sc}{\PYGZsq{}Å\PYGZsq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{k}{return}\PYG{+w}{ }\PYG{l+m+mi}{26}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{case}\PYG{+w}{ }\PYG{n+no}{L}\PYG{l+s+sc}{\PYGZsq{}ä\PYGZsq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{k}{case}\PYG{+w}{ }\PYG{n+no}{L}\PYG{l+s+sc}{\PYGZsq{}Ä\PYGZsq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{k}{return}\PYG{+w}{ }\PYG{l+m+mi}{27}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{case}\PYG{+w}{ }\PYG{n+no}{L}\PYG{l+s+sc}{\PYGZsq{}ö\PYGZsq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{k}{case}\PYG{+w}{ }\PYG{n+no}{L}\PYG{l+s+sc}{\PYGZsq{}Ö\PYGZsq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{k}{return}\PYG{+w}{ }\PYG{l+m+mi}{28}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{default}\PYG{o}{:}
+\PYG{+w}{      }\PYG{k}{return}\PYG{+w}{ }\PYG{l+m+mi}{\PYGZhy{}1}\PYG{p}{;}
+\PYG{+w}{  }\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

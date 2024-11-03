@@ -1,0 +1,26 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{// Mapping of T9 keys to character ranges}
+\PYG{k}{static}\PYG{+w}{ }\PYG{k}{const}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{key\PYGZus{}start}\PYG{p}{[]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{+w}{    }\PYG{c+c1}{// 1: abc (0,1,2)}
+\PYG{+w}{  }\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{+w}{    }\PYG{c+c1}{// 2: def (3,4,5)}
+\PYG{+w}{  }\PYG{l+m+mi}{6}\PYG{p}{,}\PYG{+w}{    }\PYG{c+c1}{// 3: ghi (6,7,8)}
+\PYG{+w}{  }\PYG{l+m+mi}{9}\PYG{p}{,}\PYG{+w}{    }\PYG{c+c1}{// 4: jkl (9,10,11)}
+\PYG{+w}{  }\PYG{l+m+mi}{12}\PYG{p}{,}\PYG{+w}{   }\PYG{c+c1}{// 5: mno (12,13,14)}
+\PYG{+w}{  }\PYG{l+m+mi}{15}\PYG{p}{,}\PYG{+w}{   }\PYG{c+c1}{// 6: pqrs (15,16,17,18)}
+\PYG{+w}{  }\PYG{l+m+mi}{19}\PYG{p}{,}\PYG{+w}{   }\PYG{c+c1}{// 7: tuv (19,20,21)}
+\PYG{+w}{  }\PYG{l+m+mi}{22}\PYG{p}{,}\PYG{+w}{   }\PYG{c+c1}{// 8: wxyz (22,23,24,25)}
+\PYG{+w}{  }\PYG{l+m+mi}{26}\PYG{+w}{    }\PYG{c+c1}{// 9: åäö (26,27,28)}
+\PYG{p}{\PYGZcb{};}
+
+\PYG{k}{static}\PYG{+w}{ }\PYG{k}{const}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{key\PYGZus{}length}\PYG{p}{[]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{+w}{  }\PYG{c+c1}{// 1: abc}
+\PYG{+w}{  }\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{+w}{  }\PYG{c+c1}{// 2: def}
+\PYG{+w}{  }\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{+w}{  }\PYG{c+c1}{// 3: ghi}
+\PYG{+w}{  }\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{+w}{  }\PYG{c+c1}{// 4: jkl}
+\PYG{+w}{  }\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{+w}{  }\PYG{c+c1}{// 5: mno}
+\PYG{+w}{  }\PYG{l+m+mi}{4}\PYG{p}{,}\PYG{+w}{  }\PYG{c+c1}{// 6: pqrs}
+\PYG{+w}{  }\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{+w}{  }\PYG{c+c1}{// 7: tuv}
+\PYG{+w}{  }\PYG{l+m+mi}{4}\PYG{p}{,}\PYG{+w}{  }\PYG{c+c1}{// 8: wxyz}
+\PYG{+w}{  }\PYG{l+m+mi}{3}\PYG{+w}{   }\PYG{c+c1}{// 9: åäö}
+\PYG{p}{\PYGZcb{};}
+\end{Verbatim}
