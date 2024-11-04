@@ -1,1 +1,5 @@
-#include "dijakstra.h"
+#include "dijkstra.h"
+
+int main() {
+  ;
+}

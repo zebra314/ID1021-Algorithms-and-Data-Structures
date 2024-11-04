@@ -7,27 +7,60 @@
 #include <string.h>
 #include <time.h>
 
-// Elements
-typedef struct city city; // Forward declaration
+#define MOD 100
+#define BUFFER 200
 
-typedef struct connection {
-  city *dst;
+/* -------------------------------- Elements -------------------------------- */
+
+typedef struct City City; // Forward declaration
+
+typedef struct Connection {
+  City *dst;
   int time;
-} connection;
+} Connection;
 
-typedef struct city {
+typedef struct City {
   char *name;
-  connection *connections;        // Dynamic array of connections, Hash table
-  connection *recent_connections; // Array of recent connections
-  int n;                          // Number of connections
-  int capacity;                   // Capacity of connections
-} city;
+  int id;
+  Connection *connections; // Dynamic array of connections
+  int size;                // Number of connections
+  int capacity;            // Capacity of connections
+} City;
 
-typedef struct map {
-  city *cities;            // Dynamic array of cities, Hash table
-  int n;                   // Number of cities
+typedef struct Map {
+  City *cities;            // Dynamic array of cities, Hash table
+  int size;                   // Number of cities
   int capacity;            // Capacity of cities
-} map;
+} Map;
 
+typedef struct Path {
+  City *city;
+  int total_time;
+  struct Path *prev;
+} Path;
+
+typedef struct PriorityQueue {
+  Path **paths;
+  int size;
+  int capacity;
+} PriorityQueue;
+
+/* ---------------------------------- Init ---------------------------------- */
+
+Map *graph(char *file);
+City *lookup_city(Map *map, char *name);
+void connect(City *src, City *dst, int time);
+int hash(char *name, int mod);
+void connect(City *src, City *dst, int time);
+
+/* ------------------------- Prior Queue operations ------------------------- */
+
+PriorityQueue *new_priority_queue();
+void push(PriorityQueue *pq, Path *p);
+Path *pop(PriorityQueue *pq);
+
+/* ------------------------------ Search operations -------------------------- */
+
+Path *dijsktra(Map *map, City *from, City *to);
 
 #endif // _DIJKSTRA_H_
