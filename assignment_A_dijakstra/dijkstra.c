@@ -47,6 +47,7 @@ City *lookup_city(Map *map, char *name) {
   if(map->cities[index].name == NULL) {
     City *c = (City*)malloc(sizeof(City));
     c->name = strdup(name);
+    c->id = map->size;
     c->connections = (Connection*)malloc(sizeof(Connection)*MOD);
     c->size = 0;
     c->capacity = MOD;
@@ -68,12 +69,7 @@ void connect(City *src, City *dst, int time) {
     src->capacity *= 2;
     src->connections = realloc(src->connections, src->capacity * sizeof(Connection));
   }
-
-  index = hash(dst->name, src->capacity);
-  while(src->connections[index].dst != NULL) {
-    index = (index + 1) % src->capacity;
-  }
-  src->connections[index] = *c;
+  src->connections[src->size] = *c;
   src->size++;
 
   // Set connection at city dst
@@ -82,12 +78,7 @@ void connect(City *src, City *dst, int time) {
     dst->capacity *= 2;
     dst->connections = realloc(dst->connections, dst->capacity * sizeof(Connection));
   }
-
-  index = hash(src->name, dst->capacity);
-  while(dst->connections[index].dst != NULL) {
-    index = (index + 1) % dst->capacity;
-  }
-  dst->connections[index] = *c;
+  dst->connections[dst->size] = *c;
   dst->size++;
 }
 
@@ -145,29 +136,47 @@ Path *pop(PriorityQueue *pq) {
   return p;
 }
 
-/* --------------------------------- Search --------------------------------- */
+/* -------------------------------------------------------------------------- */
+/*                                   Search                                   */
+/* -------------------------------------------------------------------------- */
 
 Path *dijsktra(Map *map, City *from, City *to) {
+
   PriorityQueue *pq = new_priority_queue();
-  Path *p = (Path*)malloc(sizeof(Path));
-  p->city = from;
-  p->total_time = 0;
-  p->prev = NULL;
-  push(pq, p);
+  Path **result = (Path**)malloc(map->size * sizeof(Path*));
+  for(int i = 0; i < map->size; i++) {
+    result[i] = (Path*)malloc(sizeof(Path));
+    result[i]->city = NULL;
+    result[i]->total_time = 0;
+    result[i]->prev = NULL;
+  }
+
+  result[from->id]->city = from;
+  result[from->id]->total_time = 0;
+  push(pq, result[from->id]);
 
   while(pq->size > 0) {
     Path *p = pop(pq);
     City *c = p->city;
 
     if(c == to) {
+      printf("Found\n");
       return p;
     }
 
-    for(int i = 0; i < c->capacity; i++) {
-      if(c->connections[i].dst == NULL) {
+    // Check all connections
+    result[c->id] = p;
+    for(int i = 0; i < c->size; i++) {
+      Connection *nxt = &c->connections[i];
+
+      // If the city is already in the path, skip it
+      // or if the time is not better, skip it
+      if(result[nxt->dst->id]->city != NULL || 
+          (result[nxt->dst->id]->total_time >= p->total_time + nxt->time)) {
         continue;
       }
-      Connection *nxt = &c->connections[i];
+
+      // Add the city to the queue
       Path *new = (Path*)malloc(sizeof(Path));
       new->city = nxt->dst;
       new->total_time = p->total_time + nxt->time;
@@ -175,5 +184,21 @@ Path *dijsktra(Map *map, City *from, City *to) {
       push(pq, new);
     }
   }
+  printf("No path found\n");
+
   return NULL;
+}
+
+void print_path(Path *p) {
+  if(p == NULL)
+    return;
+  print_path(p->prev);
+  printf("%s\n", p->city->name);
+}
+
+int print_time(Path *p) {
+  if(p == NULL) 
+    return 0;
+  int total = print_time(p->prev) + p->total_time;
+  return total;
 }

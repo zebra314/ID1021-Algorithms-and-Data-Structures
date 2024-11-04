@@ -7,8 +7,9 @@
 #include <string.h>
 #include <time.h>
 
-#define MOD 100
+#define MOD 250
 #define BUFFER 200
+#define DEBUG
 
 /* -------------------------------- Elements -------------------------------- */
 
@@ -62,5 +63,7 @@ Path *pop(PriorityQueue *pq);
 /* ------------------------------ Search operations -------------------------- */
 
 Path *dijsktra(Map *map, City *from, City *to);
+void print_path(Path *path);
+int print_time(Path *path);
 
 #endif // _DIJKSTRA_H_
