@@ -145,7 +145,7 @@ Path *dijsktra(Map *map, City *from, City *to) {
   PriorityQueue *pq = new_priority_queue();
   Path **result = (Path**)malloc(map->size * sizeof(Path*));
   for(int i = 0; i < map->size; i++) {
-    result[i] = (Path*)malloc(sizeof(Path));
+    result[i] = (Path*)malloc(sizeof(Path));      
     result[i]->city = NULL;
     result[i]->total_time = 0;
     result[i]->prev = NULL;
@@ -170,7 +170,7 @@ Path *dijsktra(Map *map, City *from, City *to) {
       Connection *nxt = &c->connections[i];
 
       // If the city is already in the path, skip it
-      // or if the time is not better, skip it
+      // or if the time is not better, skip it        
       if(result[nxt->dst->id]->city != NULL || 
           (result[nxt->dst->id]->total_time >= p->total_time + nxt->time)) {
         continue;
@@ -185,20 +185,30 @@ Path *dijsktra(Map *map, City *from, City *to) {
     }
   }
   printf("No path found\n");
-
   return NULL;
 }
 
+void path_info(Path *p) {
+  if(p == NULL) {
+    printf("No path found\n");
+    return;
+  }
+  printf("Path:\n");
+  print_path(p);
+}
+
 void print_path(Path *p) {
-  if(p == NULL)
+  if(p == NULL) 
     return;
   print_path(p->prev);
   printf("%s\n", p->city->name);
+  printf("Time: %d\n", p->total_time);
+  printf("\n");
 }
 
-int print_time(Path *p) {
-  if(p == NULL) 
-    return 0;
-  int total = print_time(p->prev) + p->total_time;
-  return total;
-}
+void free_path(Path *p) {
+  if(p == NULL)
+    return;
+  free_path(p->prev);
+  free(p);
+} 

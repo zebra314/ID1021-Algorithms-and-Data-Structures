@@ -63,7 +63,8 @@ Path *pop(PriorityQueue *pq);
 /* ------------------------------ Search operations -------------------------- */
 
 Path *dijsktra(Map *map, City *from, City *to);
+void path_info(Path *p);
 void print_path(Path *path);
-int print_time(Path *path);
+void free_path(Path *p);
 
 #endif // _DIJKSTRA_H_

@@ -11,7 +11,6 @@ int main() {
     printf("No path found\n");
   } else {
     print_path(p);
-    printf("Total time: %d\n", print_time(p));
   }
 
   return 0;
