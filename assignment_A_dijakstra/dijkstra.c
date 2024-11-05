@@ -140,8 +140,7 @@ Path *pop(PriorityQueue *pq) {
 /*                                   Search                                   */
 /* -------------------------------------------------------------------------- */
 
-Path *dijsktra(Map *map, City *from, City *to) {
-
+Path *dijkstra(Map *map, City *from, City *to) {
   PriorityQueue *pq = new_priority_queue();
   Path **result = (Path**)malloc(map->size * sizeof(Path*));
   for(int i = 0; i < map->size; i++) {
@@ -160,7 +159,15 @@ Path *dijsktra(Map *map, City *from, City *to) {
     City *c = p->city;
 
     if(c == to) {
-      printf("Found\n");
+      // printf("Found\n");
+      // Check the amount of nodes in the "done" array
+      int done_count = 0;
+      for (int i = 0; i < map->size; i++) {
+        if (result[i]->city != NULL) {
+          done_count++;
+        }
+      }
+      printf("%d,", done_count);
       return p;
     }
 
@@ -211,4 +218,87 @@ void free_path(Path *p) {
     return;
   free_path(p->prev);
   free(p);
-} 
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                    Test                                    */
+/* -------------------------------------------------------------------------- */
+
+// Benchmarking
+struct timespec t_start, t_stop;
+long nano_seconds(struct timespec *t_start, struct timespec *t_stop) {
+  return (t_stop->tv_nsec - t_start->tv_nsec) +
+         (t_stop->tv_sec - t_start->tv_sec) * 1000000000;
+}
+
+void test1() {
+  Map *map = graph("europe.csv");
+  City *from = lookup_city(map, "Malmö");
+  City *to = lookup_city(map, "Kiruna");
+
+  clock_gettime(CLOCK_REALTIME, &t_start);
+  Path *p = dijkstra(map, from, to);
+  clock_gettime(CLOCK_REALTIME, &t_stop);
+
+  if(p == NULL) {
+    printf("No path found\n");
+  } else {
+    print_path(p);
+  }
+
+  long ns = nano_seconds(&t_start, &t_stop);
+  printf("Compute Time: %ld ns\n", ns);
+}
+
+void test2() {
+  struct timespec t_start, t_stop;
+  long ns;
+
+  Map *map = graph("europe.csv");
+  City *start_city = lookup_city(map, "Malmö");
+
+  // char *cities[] = {"Kiruna", "Stockholm", "Göteborg", "Uppsala", "Örebro", "Karlstad", "Sundsvall",
+  //                     "Umeå", "Luleå", "Gävle", "Linköping", "Helsingborg"};
+  char *cities[] = {
+    "Stockholm", "Södertälje", "Norrköping", "Linköping", "Mjölby",
+    "Nässjö", "Alvesta", "Hässleholm", "Lund", "Malmö",
+    "Göteborg", "Varberg", "Halmstad", "Åstorp", "Skövde",
+    "Herrljunga", "Falköping", "Jönköping", "Värnamo", "Emmaboda",
+    "Kalmar", "Kristianstad", "Karlskrona", "Hallsberg", "Örebro",
+    "Arboga", "Västerås", "Uppsala", "Gävle", "Sundsvall"
+  };
+  int num_cities = sizeof(cities) / sizeof(cities[0]);
+
+  // printf("Benchmark results for starting city: %s\n", start_city->name);
+  // printf("Destination City | Compute Time (ns) | Nodes in Done Array\n");
+  // printf("---------------------------------------------------------\n");
+
+  for (int i = 0; i < num_cities; i++) {
+    City *destination = lookup_city(map, cities[i]);
+    if (destination == NULL) {
+      printf("City not found: %s\n", cities[i]);
+      continue;
+    }
+
+    clock_gettime(CLOCK_REALTIME, &t_start);
+    Path *path = dijkstra(map, start_city, destination);
+    clock_gettime(CLOCK_REALTIME, &t_stop);
+
+    ns = nano_seconds(&t_start, &t_stop);
+
+    if (path == NULL) {
+      printf("%s | No path found\n", destination->name);
+    } else {
+      printf("%s,%ld\n", destination->name, ns);
+      free_path(path);  // Free memory for the path after use if needed
+    }
+  }
+}
+
+void check_connection_avg(Map *map) {
+  int total_connections = 0;
+  for (int i = 0; i < map->size; i++) {
+    total_connections += map->cities[i].size;
+  }
+  printf("Average connections per city: %f\n", (float)total_connections / map->size);
+}

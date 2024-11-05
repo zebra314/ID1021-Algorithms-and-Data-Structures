@@ -62,9 +62,15 @@ Path *pop(PriorityQueue *pq);
 
 /* ------------------------------ Search operations -------------------------- */
 
-Path *dijsktra(Map *map, City *from, City *to);
+Path *dijkstra(Map *map, City *from, City *to);
 void path_info(Path *p);
 void print_path(Path *path);
 void free_path(Path *p);
 
+/* ---------------------------------- Test ---------------------------------- */
+
+long nano_seconds(struct timespec *t_start, struct timespec *t_stop);
+void test1();
+void test2();
+void check_connection_avg(Map *map);
 #endif // _DIJKSTRA_H_

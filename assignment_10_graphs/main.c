@@ -59,7 +59,9 @@ int main() {
 // int time = shortest_path(lookup_city(trains, "Göteborg"), lookup_city(trains, "Sundsvall"), path, 0);
 // int time = shortest_path(lookup_city(trains, "Sundsvall"), lookup_city(trains, "Umeå"), path, 0);
 // int time = shortest_path(lookup_city(trains, "Umeå"), lookup_city(trains, "Göteborg"), path, 0);
-int time = shortest_path(lookup_city(trains, "Göteborg"), lookup_city(trains, "Umeå"), path, 0);
+// int time = shortest_path(lookup_city(trains, "Göteborg"), lookup_city(trains, "Umeå"), path, 0);
+
+  int time = shortest_path(lookup_city(trains, "Malmö"), lookup_city(trains, "Kiruna"), path, 0);
 
   clock_gettime(CLOCK_REALTIME, &t_stop);
 

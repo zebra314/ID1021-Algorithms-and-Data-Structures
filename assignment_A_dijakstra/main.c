@@ -1,17 +1,6 @@
 #include "dijkstra.h"
 
 int main() {
-  Map *map = graph("europe.csv");
-  City *from = lookup_city(map, "Malmö");
-  City *to = lookup_city(map, "Kiruna");
-
-  Path *p = dijsktra(map, from, to);
-
-  if(p == NULL) {
-    printf("No path found\n");
-  } else {
-    print_path(p);
-  }
-
+  test2();
   return 0;
 }

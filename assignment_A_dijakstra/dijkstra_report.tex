@@ -1,0 +1,289 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue]{hyperref}
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18} 
+
+\usepackage{minted}
+\usepackage{pgfplotstable}
+
+\begin{document}
+
+\title{
+  \textbf{Dijkstra to our rescue in C}
+}
+\author{Ying Pei Lin}
+\date{Fall 2024}
+
+\maketitle
+
+\subsection*{The City structure}
+
+The city is minimum unit of the map.
+We store the city in the hash table, a dynamic array in map struct. The name of the city is
+used as the key to access the city in the map struct.
+
+The id provide another way to access the city, we assign the id to the city when we add the 
+city to the map. The value of id will be the same as the size of the cities array in the map struct at
+the time of adding the city to the map.
+This ensures that the ids are continuous and there are no duplicates. 
+We use the id to access the city in the path struct. 
+
+The size and capacity are used to keep track of the number of connections and the capacity of the connections array.  
+
+\begin{minted}{c}
+typedef struct City {
+  char *name;
+  int id;
+  Connection *connections; // Dynamic array of connections
+  int size;                // Number of connections
+  int capacity;            // Capacity of connections
+} City;
+\end{minted}
+
+\subsection*{The Connection structures}
+
+The connection struct is stored in the connections array in the city struct. 
+It stores the destination city and the time taken to travel from the source city to the destination city.
+
+\begin{minted}{c}
+typedef struct Connection {
+  City *dst;
+  int time;
+} Connection;
+\end{minted} 
+  
+\subsection*{The Map structures}
+
+The map struct is used to store the cities in the map. The cities array is a dynamic array of cities,
+which is implemented as a hash table, using the name of the city as the key to access the city in the map struct.
+The size and capacity are used to keep track of the number of cities and the capacity of the cities array.
+
+\begin{minted}{c}
+typedef struct Map {
+  City *cities;            // Dynamic array of cities, Hash table
+  int size;                // Number of cities
+  int capacity;            // Capacity of cities
+} Map;
+\end{minted}
+
+\subsection*{The Path structures}
+
+The path array is used to store the path from the source city to the destination city.
+Each path struct stores a city, the total time taken to travel from the source city to the current city.
+The prev pointer is used to store the previous city in the path.
+
+If we keep the path to be the shortest path at each stage by only update the path when we find a shorter path,
+then after we reach the destination city, the path array will store the shortest path from the source city to the destination city.
+
+\begin{minted}{c}
+typedef struct Path {
+  City *city;
+  int total_time;
+  struct Path *prev;
+} Path;
+\end{minted}
+
+\subsection*{The PriorityQueue structures}
+
+The priority queue stores the paths in the order of the total time taken to travel from the source city to the current city.
+We enqueue the paths when we find a shorter path from the current city and pop the path with the shortest time
+when we finish exploring the current city.
+
+\begin{minted}{c}
+typedef struct PriorityQueue {
+  Path **paths;
+  int size;
+  int capacity;
+} PriorityQueue;
+\end{minted}
+
+\subsection*{The Dijkstra algorithm}
+
+While exploring the neighbors of the current city,
+we only add the city to the queue if the city is the clostest unvisited city to the source city.
+
+The way we check if the city is the clostest city is by checking if 
+the time from the beginning to its neighbor is shorter than the time
+we have already stored in the path plus the time from the current city to the neighbor.
+The algorithm will keep running until we reach the destination city or every city has been visited.
+
+Since we always ensure that the path is the shortest path at each stage, we can be sure that the path we find 
+at the end will also be the shortest path. 
+It will be more efficient to BFS the graph since we won't check the same city multiple times.
+The code below shows the implementation of the Dijkstra algorithm.
+
+\begin{minted}{c}
+Path *dijsktra(Map *map, City *from, City *to) {
+  PriorityQueue *pq = new_priority_queue();
+  Path **done = init_done(map);
+
+  done[from->id]->city = from;
+  done[from->id]->total_time = 0;
+  push(pq, done[from->id]);
+
+  while(pq->size > 0) {
+    Path *p = pop(pq);
+    City *c = p->city;
+    if(c == to) return p; // Found the destination
+
+    // Check all connections
+    done[c->id] = p;
+    for(int i = 0; i < c->size; i++) {
+      Connection *nxt = &c->connections[i];
+
+      // Skip it, if the city is already in the path,
+      // or if the time is not better.        
+      if(done[nxt->dst->id]->city != NULL || 
+          (done[nxt->dst->id]->total_time >= p->total_time + nxt->time)) {
+        continue;
+      }
+
+      // Add the city to the queue
+      Path *new = (Path*)malloc(sizeof(Path));
+      new->city = nxt->dst;
+      new->total_time = p->total_time + nxt->time;
+      new->prev = p;
+      push(pq, new);
+    }
+  }
+  return NULL;
+}
+\end{minted}
+
+\subsection*{Benchmarks}
+
+First, we compare the compute time of the Dijkstra algorithm with BFS.
+For the same route from Malmö to Kiruna,
+Dijkstra is much faster than BFS, as we can see from the Table \ref{tab:compute_time_comparison}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{|c|c|c|}
+    \hline
+    \textbf{Algorithm} & \textbf{Compute Time (ns)} \\
+    \hline
+    BFS & 569736000 \\
+    \hline
+    Dijkstra & 108900 \\
+    \hline
+  \end{tabular}
+  \caption{Compute Time Comparison from Malmö to Kiruna}
+  \label{tab:compute_time_comparison}
+\end{table}
+
+Next, we compare the compute time of the Dijkstra algorithm for different number of nodes in the done array.
+We select twelve cities from the data and calculate the shortest path from Malmö to each city.
+The results are shown in Table \ref{tab:benchmark_results} and Figure \ref{fig:compute_time_vs_nodes}.
+
+\begin{table}[H]
+  \centering
+  \pgfplotstabletypeset[
+    col sep=comma,
+    string type,
+    columns={node entry, destination, compute time},
+    columns/node entry/.style={column name={Nodes in Done Array}, column type={|c}},
+    columns/destination/.style={column name={Destination City}, column type={|c}},
+    columns/compute time/.style={column name={Compute Time (ns)}, column type={|c|}, fixed, zerofill, precision=0},
+    every head row/.style={before row=\hline, after row=\hline},
+    every last row/.style={after row=\hline}
+  ]{./data/benchmark.dat}
+  \caption{Benchmark Results for Shortest Path from Malmö}
+  \label{tab:benchmark_results}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      xlabel={Nodes in Done Array},
+      ylabel={Compute Time (ns)},
+      title={Compute Time vs. Nodes in Done Array},
+      ymin=0,
+      xmin=0,
+      width=12cm,
+      height=8cm,
+      grid=major,
+      legend pos=north west
+    ]
+    \addplot[
+      only marks, 
+      mark=square*, 
+      mark options={blue}
+    ] 
+    table[
+      x={node entry}, 
+      y={compute time}, 
+      col sep=comma
+    ]{./data/benchmark.dat};
+    \addlegendentry{Compute Time}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Compute Time vs. Nodes in Done Array for Shortest Paths from Malmö}
+  \label{fig:compute_time_vs_nodes}
+\end{figure}
+
+Assume that there are $n$ cities in the map, and the average number of connections for each city is $m$.
+To reason about the time complexity of the Dijkstra algorithm, 
+we first look at the time complexity of the priority queue.
+The time complexity of the priority queue is $O(n)$ for pop operations 
+and $O(1)$ for push operations (I didn't implement the priority queue with a heap, otherwise 
+the time complexity for both push and pop operations would be $O(log(n))$).
+
+In each iteration, we pop the path with the shortest time from the priority queue ($O(n)$).
+Then, we check all the connections of the current city ($O(m)$).
+If the city is not in the path, and the time is better, we add the city to the queue ($O(1)$).
+The total connections we check throughout the loop is $O(nm)$.
+Therefore, we perform $O(n)$ pop operations and $O(nm)$ push operations, 
+which gives us a time complexity of $O(n^2 + nm)$ for the Dijkstra algorithm.
+Since $m$ is usually much smaller than $n$, e.g., $avg(m) = 1.5$ for the data we have,
+we can simplify the time complexity to $O(n^2)$.
+
+To check if this fit the results we have, we check the lineariy of the time and the square of the nodes in the done array.
+We do another benchmark to get more data points.
+The results are shown in Figure \ref{fig:compute_time_vs_nodes_square}.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      xlabel={Square number of Nodes in Done Array},
+      ylabel={Compute Time (ns)},
+      title={Compute Time vs. Square number of Nodes in Done Array},
+      ymin=0,
+      xmin=0,
+      width=12cm,
+      height=8cm,
+      grid=major,
+      legend pos=north west
+    ]
+    \addplot[
+      only marks, 
+      mark=square*, 
+      mark options={blue}
+    ] 
+    table[
+      x={node entry}, 
+      y={compute time}, 
+      col sep=comma
+    ]{./data/benchmark_square.dat};
+    \addlegendentry{Compute Time}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Compute Time vs. Square number of Nodes in Done Array for Shortest Paths from Malmö}
+  \label{fig:compute_time_vs_nodes_square}
+\end{figure}
+
+\end{document}

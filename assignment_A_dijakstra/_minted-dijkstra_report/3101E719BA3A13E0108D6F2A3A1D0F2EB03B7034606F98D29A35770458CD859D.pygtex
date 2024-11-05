@@ -1,0 +1,37 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{Path}\PYG{+w}{ }\PYG{o}{*}\PYG{n+nf}{dijsktra}\PYG{p}{(}\PYG{n}{Map}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{map}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{City}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{from}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{City}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{to}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{n}{PriorityQueue}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{pq}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{new\PYGZus{}priority\PYGZus{}queue}\PYG{p}{();}
+\PYG{+w}{  }\PYG{n}{Path}\PYG{+w}{ }\PYG{o}{**}\PYG{n}{done}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{init\PYGZus{}done}\PYG{p}{(}\PYG{n}{map}\PYG{p}{);}
+
+\PYG{+w}{  }\PYG{n}{done}\PYG{p}{[}\PYG{n}{from}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{id}\PYG{p}{]}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{city}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{from}\PYG{p}{;}
+\PYG{+w}{  }\PYG{n}{done}\PYG{p}{[}\PYG{n}{from}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{id}\PYG{p}{]}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{total\PYGZus{}time}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}
+\PYG{+w}{  }\PYG{n}{push}\PYG{p}{(}\PYG{n}{pq}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{done}\PYG{p}{[}\PYG{n}{from}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{id}\PYG{p}{]);}
+
+\PYG{+w}{  }\PYG{k}{while}\PYG{p}{(}\PYG{n}{pq}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{size}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{Path}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{p}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{pop}\PYG{p}{(}\PYG{n}{pq}\PYG{p}{);}
+\PYG{+w}{    }\PYG{n}{City}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{c}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{p}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{city}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{if}\PYG{p}{(}\PYG{n}{c}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{n}{to}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{p}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{// Found the destination}
+
+\PYG{+w}{    }\PYG{c+c1}{// Check all connections}
+\PYG{+w}{    }\PYG{n}{done}\PYG{p}{[}\PYG{n}{c}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{id}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{p}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{i}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{+w}{ }\PYG{o}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{c}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{size}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{++}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{      }\PYG{n}{Connection}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{nxt}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n}{c}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{connections}\PYG{p}{[}\PYG{n}{i}\PYG{p}{];}
+
+\PYG{+w}{      }\PYG{c+c1}{// Skip it, if the city is already in the path,}
+\PYG{+w}{      }\PYG{c+c1}{// or if the time is not better.}
+\PYG{+w}{      }\PYG{k}{if}\PYG{p}{(}\PYG{n}{done}\PYG{p}{[}\PYG{n}{nxt}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{dst}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{id}\PYG{p}{]}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{city}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{n+nb}{NULL}\PYG{+w}{ }\PYG{o}{||}
+\PYG{+w}{          }\PYG{p}{(}\PYG{n}{done}\PYG{p}{[}\PYG{n}{nxt}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{dst}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{id}\PYG{p}{]}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{total\PYGZus{}time}\PYG{+w}{ }\PYG{o}{\PYGZgt{}=}\PYG{+w}{ }\PYG{n}{p}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{total\PYGZus{}time}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{n}{nxt}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{time}\PYG{p}{))}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{continue}\PYG{p}{;}
+\PYG{+w}{      }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{      }\PYG{c+c1}{// Add the city to the queue}
+\PYG{+w}{      }\PYG{n}{Path}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{new}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{Path}\PYG{o}{*}\PYG{p}{)}\PYG{n}{malloc}\PYG{p}{(}\PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{Path}\PYG{p}{));}
+\PYG{+w}{      }\PYG{n}{new}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{city}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{nxt}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{dst}\PYG{p}{;}
+\PYG{+w}{      }\PYG{n}{new}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{total\PYGZus{}time}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{p}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{total\PYGZus{}time}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{n}{nxt}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{time}\PYG{p}{;}
+\PYG{+w}{      }\PYG{n}{new}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{prev}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{p}\PYG{p}{;}
+\PYG{+w}{      }\PYG{n}{push}\PYG{p}{(}\PYG{n}{pq}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{new}\PYG{p}{);}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{  }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{  }\PYG{k}{return}\PYG{+w}{ }\PYG{n+nb}{NULL}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

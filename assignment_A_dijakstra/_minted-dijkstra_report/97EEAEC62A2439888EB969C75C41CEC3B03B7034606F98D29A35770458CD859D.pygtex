@@ -1,0 +1,7 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{typedef}\PYG{+w}{ }\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{Map}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{n}{City}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{cities}\PYG{p}{;}\PYG{+w}{            }\PYG{c+c1}{// Dynamic array of cities, Hash table}
+\PYG{+w}{  }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{size}\PYG{p}{;}\PYG{+w}{                }\PYG{c+c1}{// Number of cities}
+\PYG{+w}{  }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{capacity}\PYG{p}{;}\PYG{+w}{            }\PYG{c+c1}{// Capacity of cities}
+\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{n}{Map}\PYG{p}{;}
+\end{Verbatim}

@@ -1,0 +1,9 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{typedef}\PYG{+w}{ }\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{City}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{k+kt}{char}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{name}\PYG{p}{;}
+\PYG{+w}{  }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{id}\PYG{p}{;}
+\PYG{+w}{  }\PYG{n}{Connection}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{connections}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{// Dynamic array of connections}
+\PYG{+w}{  }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{size}\PYG{p}{;}\PYG{+w}{                }\PYG{c+c1}{// Number of connections}
+\PYG{+w}{  }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{capacity}\PYG{p}{;}\PYG{+w}{            }\PYG{c+c1}{// Capacity of connections}
+\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{n}{City}\PYG{p}{;}
+\end{Verbatim}
